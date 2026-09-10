@@ -69,7 +69,7 @@ public class PmsLogisticsServiceImpl implements IPmsLogisticsService
     {
         if (logistics.getCarrierId() == null)
         {
-            return;
+            throw new ServiceException("请选择物流商");
         }
         PmsCarrier carrier = carrierMapper.selectCarrierById(logistics.getCarrierId());
         if (carrier == null || PmsConstants.DEL_REMOVED.equals(carrier.getDelFlag()))
