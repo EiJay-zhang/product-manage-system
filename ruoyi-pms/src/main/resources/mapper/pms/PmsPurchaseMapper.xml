@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsPurchaseMapper">
+    <resultMap id="PmsPurchaseResult" type="PmsPurchase">
+        <id property="purchaseId" column="purchase_id"/>
+        <result property="purchaseNo" column="purchase_no"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="spec" column="spec"/>
+        <result property="supplierId" column="supplier_id"/>
+        <result property="supplierName" column="supplier_name"/>
+        <result property="qty" column="qty"/>
+        <result property="purchasePrice" column="purchase_price"/>
+        <result property="amount" column="amount"/>
+        <result property="purchaseTime" column="purchase_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <sql id="selectVo">
+        select purchase_id, purchase_no, product_id, product_name, spec, supplier_id, supplier_name, qty, purchase_price, amount, purchase_time, create_by, create_time, remark from pms_purchase
+    </sql>
+    <select id="selectPurchaseList" resultMap="PmsPurchaseResult">
+        <include refid="selectVo"/>
+        <where>
+            <if test="productId != null">AND product_id = #{productId}</if>
+            <if test="supplierId != null">AND supplier_id = #{supplierId}</if>
+            <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>
+            <if test="purchaseNo != null and purchaseNo != ''">AND purchase_no like concat('%', #{purchaseNo}, '%')</if>
+            <if test="beginTime != null">AND purchase_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND purchase_time &lt;= #{endTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">AND purchase_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">AND purchase_time &lt;= #{params.endTime}</if>
+        </where>
+        order by purchase_id desc
+    </select>
+    <select id="selectPurchaseById" resultMap="PmsPurchaseResult">
+        <include refid="selectVo"/> where purchase_id = #{purchaseId}
+    </select>
+    <select id="selectMaxPurchaseNo" resultType="String">
+        select max(purchase_no) from pms_purchase where purchase_no like concat(#{prefix}, '%')
+    </select>
+    <insert id="insertPurchase" useGeneratedKeys="true" keyProperty="purchaseId">
+        insert into pms_purchase (purchase_no, product_id, product_name, spec, supplier_id, supplier_name, qty, purchase_price, amount, purchase_time, create_by, create_time, remark)
+        values (#{purchaseNo}, #{productId}, #{productName}, #{spec}, #{supplierId}, #{supplierName}, #{qty}, #{purchasePrice}, #{amount}, #{purchaseTime}, #{createBy}, sysdate(), #{remark})
+    </insert>
+</mapper>

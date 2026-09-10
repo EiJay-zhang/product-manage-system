@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsDeviceSyncLogMapper">
+    <resultMap id="PmsDeviceSyncLogResult" type="PmsDeviceSyncLog">
+        <id property="logId" column="log_id"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="sn" column="sn"/>
+        <result property="productId" column="product_id"/>
+        <result property="syncContent" column="sync_content"/>
+        <result property="syncStatus" column="sync_status"/>
+        <result property="commandType" column="command_type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <select id="selectSyncLogList" resultMap="PmsDeviceSyncLogResult">
+        select log_id, device_id, sn, product_id, sync_content, sync_status, command_type, create_time, remark
+        from pms_device_sync_log
+        <where>
+            <if test="deviceId != null">AND device_id = #{deviceId}</if>
+            <if test="sn != null and sn != ''">AND sn like concat('%', #{sn}, '%')</if>
+            <if test="syncStatus != null and syncStatus != ''">AND sync_status = #{syncStatus}</if>
+            <if test="beginTime != null">AND create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND create_time &lt;= #{endTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">AND create_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">AND create_time &lt;= #{params.endTime}</if>
+        </where>
+        order by log_id desc
+    </select>
+    <insert id="insertSyncLog" useGeneratedKeys="true" keyProperty="logId">
+        insert into pms_device_sync_log (device_id, sn, product_id, sync_content, sync_status, command_type, create_time, remark)
+        values (#{deviceId}, #{sn}, #{productId}, #{syncContent}, #{syncStatus}, #{commandType}, sysdate(), #{remark})
+    </insert>
+    <update id="updateSyncLogStatus">
+        update pms_device_sync_log set sync_status = #{syncStatus}, remark = #{remark} where log_id = #{logId}
+    </update>
+</mapper>

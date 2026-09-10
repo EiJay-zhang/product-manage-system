@@ -1,4 +1,10 @@
 -- ----------------------------
+-- 创建并切换到 pms 库
+-- ----------------------------
+create database if not exists pms default character set utf8mb4 collate utf8mb4_general_ci;
+use pms;
+
+-- ----------------------------
 -- 1、部门表
 -- ----------------------------
 drop table if exists sys_dept;

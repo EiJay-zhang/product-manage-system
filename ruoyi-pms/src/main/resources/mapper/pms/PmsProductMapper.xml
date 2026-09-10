@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsProductMapper">
+    <resultMap id="PmsProductResult" type="PmsProduct">
+        <id property="productId" column="product_id"/>
+        <result property="productCode" column="product_code"/>
+        <result property="productName" column="product_name"/>
+        <result property="spec" column="spec"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="supplierId" column="supplier_id"/>
+        <result property="supplierName" column="supplier_name"/>
+        <result property="purchasePrice" column="purchase_price"/>
+        <result property="salePrice" column="sale_price"/>
+        <result property="stockQty" column="stock_qty"/>
+        <result property="purchaseTime" column="purchase_time"/>
+        <result property="intro" column="intro"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="stockStatus" column="stock_status"/>
+        <result property="deviceCount" column="device_count"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <sql id="stockCase">
+        case when p.stock_qty &lt;= 0 then 'empty'
+             when p.stock_qty &lt; ifnull(#{warnThreshold}, 5) then 'warning'
+             else 'normal' end
+    </sql>
+    <select id="selectProductList" parameterType="PmsProduct" resultMap="PmsProductResult">
+        select p.product_id, p.product_code, p.product_name, p.spec, p.category_id, c.category_name,
+               p.supplier_id, s.supplier_name, p.purchase_price, p.sale_price, p.stock_qty, p.purchase_time,
+               p.intro, p.del_flag, p.create_by, p.create_time, p.update_by, p.update_time, p.remark,
+               <include refid="stockCase"/> as stock_status,
+               (select count(1) from pms_device d where d.product_id = p.product_id) as device_count
+        from pms_product p
+        left join pms_category c on c.category_id = p.category_id
+        left join pms_supplier s on s.supplier_id = p.supplier_id
+        <where>
+            p.del_flag = '0'
+            <if test="productName != null and productName != ''">AND p.product_name like concat('%', #{productName}, '%')</if>
+            <if test="productCode != null and productCode != ''">AND p.product_code like concat('%', #{productCode}, '%')</if>
+            <if test="spec != null and spec != ''">AND p.spec like concat('%', #{spec}, '%')</if>
+            <if test="supplierId != null">AND p.supplier_id = #{supplierId}</if>
+            <if test="categoryId != null">AND p.category_id = #{categoryId}</if>
+            <if test="stockMin != null">AND p.stock_qty &gt;= #{stockMin}</if>
+            <if test="stockMax != null">AND p.stock_qty &lt;= #{stockMax}</if>
+            <if test="salePriceMin != null">AND p.sale_price &gt;= #{salePriceMin}</if>
+            <if test="salePriceMax != null">AND p.sale_price &lt;= #{salePriceMax}</if>
+            <if test="beginPurchaseTime != null">AND p.purchase_time &gt;= #{beginPurchaseTime}</if>
+            <if test="endPurchaseTime != null">AND p.purchase_time &lt;= #{endPurchaseTime}</if>
+            <if test="stockStatus == 'empty'">AND p.stock_qty &lt;= 0</if>
+            <if test="stockStatus == 'warning'">AND p.stock_qty &gt; 0 AND p.stock_qty &lt; ifnull(#{warnThreshold}, 5)</if>
+            <if test="stockStatus == 'normal'">AND p.stock_qty &gt;= ifnull(#{warnThreshold}, 5)</if>
+            <if test="params.beginTime != null and params.beginTime != ''">AND p.purchase_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">AND p.purchase_time &lt;= #{params.endTime}</if>
+        </where>
+        order by p.product_id desc
+    </select>
+    <select id="selectProductById" resultMap="PmsProductResult">
+        select p.product_id, p.product_code, p.product_name, p.spec, p.category_id, c.category_name,
+               p.supplier_id, s.supplier_name, p.purchase_price, p.sale_price, p.stock_qty, p.purchase_time,
+               p.intro, p.del_flag, p.create_by, p.create_time, p.update_by, p.update_time, p.remark,
+               (select count(1) from pms_device d where d.product_id = p.product_id) as device_count
+        from pms_product p
+        left join pms_category c on c.category_id = p.category_id
+        left join pms_supplier s on s.supplier_id = p.supplier_id
+        where p.product_id = #{productId}
+    </select>
+    <select id="selectMaxProductCode" resultType="String">
+        select max(product_code) from pms_product where product_code like concat(#{prefix}, '%')
+    </select>
+    <insert id="insertProduct" useGeneratedKeys="true" keyProperty="productId">
+        insert into pms_product (product_code, product_name, spec, category_id, supplier_id, purchase_price, sale_price, stock_qty, purchase_time, intro, del_flag, create_by, create_time, remark)
+        values (#{productCode}, #{productName}, #{spec}, #{categoryId}, #{supplierId}, #{purchasePrice}, #{salePrice}, #{stockQty}, #{purchaseTime}, #{intro}, '0', #{createBy}, sysdate(), #{remark})
+    </insert>
+    <update id="updateProduct">
+        update pms_product
+        <set>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="spec != null">spec = #{spec},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="salePrice != null">sale_price = #{salePrice},</if>
+            <if test="stockQty != null">stock_qty = #{stockQty},</if>
+            <if test="purchaseTime != null">purchase_time = #{purchaseTime},</if>
+            <if test="intro != null">intro = #{intro},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_by = #{updateBy}, update_time = sysdate()
+        </set>
+        where product_id = #{productId}
+    </update>
+    <update id="updateProductStock">
+        update pms_product
+        set stock_qty = #{stockQty},
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="purchaseTime != null">purchase_time = #{purchaseTime},</if>
+            update_by = #{updateBy}, update_time = sysdate()
+        where product_id = #{productId}
+    </update>
+    <update id="deleteProductByIds">
+        update pms_product set del_flag = '2' where product_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </update>
+</mapper>

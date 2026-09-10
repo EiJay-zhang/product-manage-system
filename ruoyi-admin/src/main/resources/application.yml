@@ -7,7 +7,7 @@ ruoyi:
   # 版权年份
   copyrightYear: 2026
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: D:/ruoyi/uploadPath
+  profile: ${user.home}/ruoyi/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
@@ -80,7 +80,8 @@ spring:
       # 密码
       password:
       # 连接超时时间
-      timeout: 10s
+      connect-timeout: 10s
+      timeout: 30s
       lettuce:
         pool:
           # 连接池中的最小空闲连接
@@ -125,6 +126,10 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
   group-configs:
+    - group: 'pms'
+      display-name: '商品管理'
+      paths-to-match: '/pms/**'
+      packages-to-scan: com.ruoyi.pms.controller
     - group: 'default'
       display-name: '测试模块'
       paths-to-match: '/**'

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsLogisticsMapper">
+    <resultMap id="PmsLogisticsResult" type="PmsLogistics">
+        <id property="logisticsId" column="logistics_id"/>
+        <result property="logisticsNo" column="logistics_no"/>
+        <result property="purchaseId" column="purchase_id"/>
+        <result property="purchaseNo" column="purchase_no"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="supplierId" column="supplier_id"/>
+        <result property="supplierName" column="supplier_name"/>
+        <result property="carrierId" column="carrier_id"/>
+        <result property="carrier" column="carrier"/>
+        <result property="shipTime" column="ship_time"/>
+        <result property="arriveTime" column="arrive_time"/>
+        <result property="weightVolume" column="weight_volume"/>
+        <result property="freight" column="freight"/>
+        <result property="insuranceFee" column="insurance_fee"/>
+        <result property="otherFee" column="other_fee"/>
+        <result property="totalFee" column="total_fee"/>
+        <result property="payStatus" column="pay_status"/>
+        <result property="reconcileTime" column="reconcile_time"/>
+        <result property="reconcileBy" column="reconcile_by"/>
+        <result property="abnormalFlag" column="abnormal_flag"/>
+        <result property="abnormalRemark" column="abnormal_remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <select id="selectLogisticsList" resultMap="PmsLogisticsResult">
+        select l.*, p.purchase_no, pr.product_name, s.supplier_name
+        from pms_logistics l
+        left join pms_purchase p on p.purchase_id = l.purchase_id
+        left join pms_product pr on pr.product_id = l.product_id
+        left join pms_supplier s on s.supplier_id = l.supplier_id
+        <where>
+            <if test="logisticsNo != null and logisticsNo != ''">AND l.logistics_no like concat('%', #{logisticsNo}, '%')</if>
+            <if test="supplierId != null">AND l.supplier_id = #{supplierId}</if>
+            <if test="purchaseId != null">AND l.purchase_id = #{purchaseId}</if>
+            <if test="payStatus != null and payStatus != ''">AND l.pay_status = #{payStatus}</if>
+            <if test="carrierId != null">AND l.carrier_id = #{carrierId}</if>
+            <if test="carrier != null and carrier != ''">AND l.carrier like concat('%', #{carrier}, '%')</if>
+            <if test="abnormalFlag != null and abnormalFlag != ''">AND l.abnormal_flag = #{abnormalFlag}</if>
+            <if test="beginTime != null">AND l.create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND l.create_time &lt;= #{endTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">AND l.create_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">AND l.create_time &lt;= #{params.endTime}</if>
+        </where>
+        order by l.logistics_id desc
+    </select>
+    <select id="selectLogisticsById" resultMap="PmsLogisticsResult">
+        select l.*, p.purchase_no, pr.product_name, s.supplier_name
+        from pms_logistics l
+        left join pms_purchase p on p.purchase_id = l.purchase_id
+        left join pms_product pr on pr.product_id = l.product_id
+        left join pms_supplier s on s.supplier_id = l.supplier_id
+        where l.logistics_id = #{logisticsId}
+    </select>
+    <select id="checkLogisticsNoUnique" resultMap="PmsLogisticsResult">
+        select * from pms_logistics where logistics_no = #{logisticsNo} limit 1
+    </select>
+    <insert id="insertLogistics" useGeneratedKeys="true" keyProperty="logisticsId">
+        insert into pms_logistics (logistics_no, purchase_id, product_id, supplier_id, carrier_id, carrier, ship_time, arrive_time, weight_volume, freight, insurance_fee, other_fee, total_fee, pay_status, abnormal_flag, abnormal_remark, create_by, create_time, remark)
+        values (#{logisticsNo}, #{purchaseId}, #{productId}, #{supplierId}, #{carrierId}, #{carrier}, #{shipTime}, #{arriveTime}, #{weightVolume}, #{freight}, #{insuranceFee}, #{otherFee}, #{totalFee}, #{payStatus}, #{abnormalFlag}, #{abnormalRemark}, #{createBy}, sysdate(), #{remark})
+    </insert>
+    <update id="updateLogistics">
+        update pms_logistics
+        <set>
+            <if test="carrierId != null">carrier_id = #{carrierId},</if>
+            <if test="carrier != null">carrier = #{carrier},</if>
+            <if test="shipTime != null">ship_time = #{shipTime},</if>
+            <if test="arriveTime != null">arrive_time = #{arriveTime},</if>
+            <if test="weightVolume != null">weight_volume = #{weightVolume},</if>
+            <if test="freight != null">freight = #{freight},</if>
+            <if test="insuranceFee != null">insurance_fee = #{insuranceFee},</if>
+            <if test="otherFee != null">other_fee = #{otherFee},</if>
+            <if test="totalFee != null">total_fee = #{totalFee},</if>
+            <if test="payStatus != null">pay_status = #{payStatus},</if>
+            <if test="reconcileTime != null">reconcile_time = #{reconcileTime},</if>
+            <if test="reconcileBy != null">reconcile_by = #{reconcileBy},</if>
+            <if test="abnormalFlag != null">abnormal_flag = #{abnormalFlag},</if>
+            <if test="abnormalRemark != null">abnormal_remark = #{abnormalRemark},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_by = #{updateBy}, update_time = sysdate()
+        </set>
+        where logistics_id = #{logisticsId}
+    </update>
+    <update id="updateLogisticsStatus">
+        update pms_logistics
+        set pay_status = #{payStatus},
+            reconcile_time = #{reconcileTime},
+            reconcile_by = #{reconcileBy},
+            update_by = #{updateBy},
+            update_time = sysdate()
+        where logistics_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </update>
+    <sql id="feeTime">
+        <if test="beginTime != null">AND create_time &gt;= #{beginTime}</if>
+        <if test="endTime != null">AND create_time &lt;= #{endTime}</if>
+    </sql>
+    <select id="selectMonthlyStats" resultType="PmsLogisticsStatsVo">
+        select
+            ifnull(sum(freight),0) as freight,
+            ifnull(sum(other_fee),0) as otherFee,
+            ifnull(sum(total_fee),0) as totalFee,
+            ifnull(sum(case when pay_status = '2' then total_fee else 0 end),0) as settledFee,
+            ifnull(sum(case when pay_status &lt;&gt; '2' then total_fee else 0 end),0) as unsettledFee,
+            count(1) as billCount
+        from pms_logistics
+        <where>
+            <include refid="feeTime"/>
+        </where>
+    </select>
+    <select id="selectCarrierStats" resultType="PmsLogisticsStatsVo">
+        select ifnull(carrier,'未填写') as name, count(1) as billCount, ifnull(sum(total_fee),0) as totalFee, ifnull(sum(freight),0) as freight
+        from pms_logistics
+        <where>
+            <include refid="feeTime"/>
+        </where>
+        group by carrier
+        order by totalFee desc
+    </select>
+    <select id="selectSupplierStats" resultType="PmsLogisticsStatsVo">
+        select ifnull(s.supplier_name,'未知厂家') as name, count(1) as billCount, ifnull(sum(l.total_fee),0) as totalFee
+        from pms_logistics l
+        left join pms_supplier s on s.supplier_id = l.supplier_id
+        <where>
+            <if test="beginTime != null">AND l.create_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND l.create_time &lt;= #{endTime}</if>
+        </where>
+        group by l.supplier_id, s.supplier_name
+        order by totalFee desc
+    </select>
+    <select id="countByPayStatus" resultType="int">
+        select count(1) from pms_logistics where pay_status = #{payStatus}
+    </select>
+</mapper>

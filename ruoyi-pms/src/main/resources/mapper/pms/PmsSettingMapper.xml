@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsSettingMapper">
+    <resultMap id="PmsSettingResult" type="PmsSetting">
+        <id property="settingId" column="setting_id"/>
+        <result property="stockWarnThreshold" column="stock_warn_threshold"/>
+        <result property="turnoverWarnMin" column="turnover_warn_min"/>
+        <result property="turnoverWarnMax" column="turnover_warn_max"/>
+        <result property="einkSyncIntervalSec" column="eink_sync_interval_sec"/>
+        <result property="einkFontStyle" column="eink_font_style"/>
+        <result property="showName" column="show_name"/>
+        <result property="showSpec" column="show_spec"/>
+        <result property="showSalePrice" column="show_sale_price"/>
+        <result property="showIntro" column="show_intro"/>
+        <result property="showStock" column="show_stock"/>
+        <result property="showSupplier" column="show_supplier"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <select id="selectSetting" resultMap="PmsSettingResult">
+        select * from pms_setting where setting_id = 1
+    </select>
+    <update id="updateSetting">
+        update pms_setting
+        <set>
+            <if test="stockWarnThreshold != null">stock_warn_threshold = #{stockWarnThreshold},</if>
+            turnover_warn_min = #{turnoverWarnMin},
+            turnover_warn_max = #{turnoverWarnMax},
+            <if test="einkSyncIntervalSec != null">eink_sync_interval_sec = #{einkSyncIntervalSec},</if>
+            <if test="einkFontStyle != null">eink_font_style = #{einkFontStyle},</if>
+            <if test="showName != null">show_name = #{showName},</if>
+            <if test="showSpec != null">show_spec = #{showSpec},</if>
+            <if test="showSalePrice != null">show_sale_price = #{showSalePrice},</if>
+            <if test="showIntro != null">show_intro = #{showIntro},</if>
+            <if test="showStock != null">show_stock = #{showStock},</if>
+            <if test="showSupplier != null">show_supplier = #{showSupplier},</if>
+            update_by = #{updateBy}, update_time = sysdate()
+        </set>
+        where setting_id = 1
+    </update>
+</mapper>

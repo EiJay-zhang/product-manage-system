@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsDeviceMapper">
+    <resultMap id="PmsDeviceResult" type="PmsDevice">
+        <id property="deviceId" column="device_id"/>
+        <result property="sn" column="sn"/>
+        <result property="deviceCode" column="device_code"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="shelfNo" column="shelf_no"/>
+        <result property="onlineStatus" column="online_status"/>
+        <result property="lastSyncTime" column="last_sync_time"/>
+        <result property="lastHeartbeat" column="last_heartbeat"/>
+        <result property="battery" column="battery"/>
+        <result property="firmware" column="firmware"/>
+        <result property="abnormalFlag" column="abnormal_flag"/>
+        <result property="abnormalRemark" column="abnormal_remark"/>
+        <result property="bindTime" column="bind_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <select id="selectDeviceList" resultMap="PmsDeviceResult">
+        select d.*, p.product_name
+        from pms_device d
+        left join pms_product p on p.product_id = d.product_id
+        <where>
+            <if test="sn != null and sn != ''">AND d.sn like concat('%', #{sn}, '%')</if>
+            <if test="deviceCode != null and deviceCode != ''">AND d.device_code like concat('%', #{deviceCode}, '%')</if>
+            <if test="productId != null">AND d.product_id = #{productId}</if>
+            <if test="onlineStatus != null and onlineStatus != ''">AND d.online_status = #{onlineStatus}</if>
+            <if test="abnormalFlag != null and abnormalFlag != ''">AND d.abnormal_flag = #{abnormalFlag}</if>
+        </where>
+        order by d.device_id desc
+    </select>
+    <select id="selectDeviceById" resultMap="PmsDeviceResult">
+        select d.*, p.product_name from pms_device d
+        left join pms_product p on p.product_id = d.product_id
+        where d.device_id = #{deviceId}
+    </select>
+    <select id="selectDeviceBySn" resultMap="PmsDeviceResult">
+        select d.*, p.product_name from pms_device d
+        left join pms_product p on p.product_id = d.product_id
+        where d.sn = #{sn} limit 1
+    </select>
+    <select id="countByProductId" resultType="int">
+        select count(1) from pms_device where product_id = #{productId}
+    </select>
+    <select id="selectByProductIds" resultMap="PmsDeviceResult">
+        select d.*, p.product_name from pms_device d
+        left join pms_product p on p.product_id = d.product_id
+        where d.product_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+    <insert id="insertDevice" useGeneratedKeys="true" keyProperty="deviceId">
+        insert into pms_device (sn, device_code, product_id, shelf_no, online_status, last_sync_time, last_heartbeat, battery, firmware, abnormal_flag, abnormal_remark, bind_time, create_by, create_time, remark)
+        values (#{sn}, #{deviceCode}, #{productId}, #{shelfNo}, #{onlineStatus}, #{lastSyncTime}, #{lastHeartbeat}, #{battery}, #{firmware}, #{abnormalFlag}, #{abnormalRemark}, #{bindTime}, #{createBy}, sysdate(), #{remark})
+    </insert>
+    <update id="updateDevice">
+        update pms_device
+        <set>
+            <if test="deviceCode != null">device_code = #{deviceCode},</if>
+            product_id = #{productId},
+            <if test="shelfNo != null">shelf_no = #{shelfNo},</if>
+            <if test="onlineStatus != null">online_status = #{onlineStatus},</if>
+            <if test="lastSyncTime != null">last_sync_time = #{lastSyncTime},</if>
+            <if test="lastHeartbeat != null">last_heartbeat = #{lastHeartbeat},</if>
+            <if test="battery != null">battery = #{battery},</if>
+            <if test="firmware != null">firmware = #{firmware},</if>
+            <if test="abnormalFlag != null">abnormal_flag = #{abnormalFlag},</if>
+            <if test="abnormalRemark != null">abnormal_remark = #{abnormalRemark},</if>
+            <if test="bindTime != null">bind_time = #{bindTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_by = #{updateBy}, update_time = sysdate()
+        </set>
+        where device_id = #{deviceId}
+    </update>
+</mapper>

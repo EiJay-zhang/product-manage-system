@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsSaleMapper">
+    <resultMap id="PmsSaleResult" type="PmsSale">
+        <id property="saleId" column="sale_id"/>
+        <result property="saleNo" column="sale_no"/>
+        <result property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="spec" column="spec"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="qty" column="qty"/>
+        <result property="salePrice" column="sale_price"/>
+        <result property="amount" column="amount"/>
+        <result property="saleTime" column="sale_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <sql id="saleWhere">
+        <where>
+            <if test="productId != null">AND product_id = #{productId}</if>
+            <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>
+            <if test="categoryId != null">AND category_id = #{categoryId}</if>
+            <if test="beginTime != null">AND sale_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND sale_time &lt;= #{endTime}</if>
+            <if test="params.beginTime != null and params.beginTime != ''">AND sale_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">AND sale_time &lt;= #{params.endTime}</if>
+        </where>
+    </sql>
+    <select id="selectSaleList" resultMap="PmsSaleResult">
+        select sale_id, sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, create_by, create_time, remark
+        from pms_sale
+        <include refid="saleWhere"/>
+        order by sale_id desc
+    </select>
+    <select id="selectSaleById" resultMap="PmsSaleResult">
+        select sale_id, sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, create_by, create_time, remark
+        from pms_sale where sale_id = #{saleId}
+    </select>
+    <select id="selectMaxSaleNo" resultType="String">
+        select max(sale_no) from pms_sale where sale_no like concat(#{prefix}, '%')
+    </select>
+    <insert id="insertSale" useGeneratedKeys="true" keyProperty="saleId">
+        insert into pms_sale (sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, create_by, create_time, remark)
+        values (#{saleNo}, #{productId}, #{productName}, #{spec}, #{categoryId}, #{qty}, #{salePrice}, #{amount}, #{saleTime}, #{createBy}, sysdate(), #{remark})
+    </insert>
+    <sql id="reportTime">
+        <if test="beginTime != null">AND sale_time &gt;= #{beginTime}</if>
+        <if test="endTime != null">AND sale_time &lt;= #{endTime}</if>
+        <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>
+        <if test="categoryId != null">AND category_id = #{categoryId}</if>
+    </sql>
+    <select id="selectTurnoverSummary" resultType="PmsTurnoverVo">
+        select ifnull(sum(amount),0) as turnover, ifnull(sum(qty),0) as qty, count(distinct product_id) as productCount
+        from pms_sale
+        <where>
+            <include refid="reportTime"/>
+        </where>
+    </select>
+    <select id="selectTurnoverTrend" resultType="PmsChartPoint">
+        select
+        <choose>
+            <when test="dimension == 'week'">date_format(sale_time, '%Y-%u')</when>
+            <when test="dimension == 'month'">date_format(sale_time, '%Y-%m')</when>
+            <when test="dimension == 'year'">date_format(sale_time, '%Y')</when>
+            <otherwise>date_format(sale_time, '%Y-%m-%d')</otherwise>
+        </choose> as label,
+        ifnull(sum(amount),0) as value,
+        ifnull(sum(qty),0) as qty
+        from pms_sale
+        <where>
+            <include refid="reportTime"/>
+        </where>
+        group by label
+        order by label
+    </select>
+    <select id="selectTurnoverRank" resultType="PmsChartPoint">
+        select product_name as label, ifnull(sum(amount),0) as value, ifnull(sum(qty),0) as qty
+        from pms_sale
+        <where>
+            <include refid="reportTime"/>
+        </where>
+        group by product_id, product_name
+        order by value desc
+        limit 20
+    </select>
+</mapper>

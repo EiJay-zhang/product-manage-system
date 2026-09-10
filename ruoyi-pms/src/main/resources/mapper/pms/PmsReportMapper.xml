@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsReportMapper">
+    <select id="selectOverview" resultType="PmsReportOverviewVo">
+        select
+            (select count(1) from pms_product where del_flag = '0') as productCount,
+            (select ifnull(sum(qty),0) from pms_purchase
+                <where>
+                    <if test="beginTime != null">AND purchase_time &gt;= #{beginTime}</if>
+                    <if test="endTime != null">AND purchase_time &lt;= #{endTime}</if>
+                    <if test="supplierId != null">AND supplier_id = #{supplierId}</if>
+                    <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>
+                </where>
+            ) as purchaseQty,
+            (select ifnull(sum(stock_qty),0) from pms_product where del_flag = '0') as stockQty,
+            (select ifnull(sum(amount),0) from pms_purchase
+                <where>
+                    <if test="beginTime != null">AND purchase_time &gt;= #{beginTime}</if>
+                    <if test="endTime != null">AND purchase_time &lt;= #{endTime}</if>
+                    <if test="supplierId != null">AND supplier_id = #{supplierId}</if>
+                    <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>
+                </where>
+            ) as purchaseCost,
+            (select count(1) from pms_product where del_flag = '0' and stock_qty &gt; 0 and stock_qty &lt; ifnull(#{warnThreshold},5)) as warnCount,
+            (select count(1) from pms_product where del_flag = '0' and stock_qty &lt;= 0) as emptyCount
+        from dual
+    </select>
+    <select id="selectCostReport" resultType="PmsCostReportVo">
+        select p.product_name as productName, p.spec as spec, p.stock_qty as stockQty, p.purchase_price as purchasePrice,
+               (p.stock_qty * p.purchase_price) as stockCost,
+               ifnull(sum(pu.amount),0) as purchaseCost,
+               ifnull(sum(pu.qty),0) as purchaseQty,
+               case when ifnull(sum(pu.qty),0) = 0 then p.purchase_price else sum(pu.amount)/sum(pu.qty) end as avgPrice
+        from pms_product p
+        left join pms_purchase pu on pu.product_id = p.product_id
+            <if test="beginTime != null">AND pu.purchase_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND pu.purchase_time &lt;= #{endTime}</if>
+        where p.del_flag = '0'
+            <if test="productName != null and productName != ''">AND p.product_name like concat('%', #{productName}, '%')</if>
+            <if test="categoryId != null">AND p.category_id = #{categoryId}</if>
+            <if test="supplierId != null">AND p.supplier_id = #{supplierId}</if>
+            <if test="stockStatus == 'empty'">AND p.stock_qty &lt;= 0</if>
+            <if test="stockStatus == 'warning'">AND p.stock_qty &gt; 0 AND p.stock_qty &lt; ifnull(#{warnThreshold},5)</if>
+            <if test="stockStatus == 'normal'">AND p.stock_qty &gt;= ifnull(#{warnThreshold},5)</if>
+        group by p.product_id, p.product_name, p.spec, p.stock_qty, p.purchase_price
+        order by stockCost desc
+    </select>
+    <select id="selectSupplierReport" resultType="PmsSupplierReportVo">
+        select s.supplier_name as supplierName,
+               count(pu.purchase_id) as purchaseTimes,
+               ifnull(sum(pu.qty),0) as totalQty,
+               ifnull(sum(pu.amount),0) as totalAmount,
+               count(distinct pu.product_id) as productCount
+        from pms_supplier s
+        left join pms_purchase pu on pu.supplier_id = s.supplier_id
+            <if test="beginTime != null">AND pu.purchase_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">AND pu.purchase_time &lt;= #{endTime}</if>
+        where s.del_flag = '0'
+            <if test="supplierId != null">AND s.supplier_id = #{supplierId}</if>
+        group by s.supplier_id, s.supplier_name
+        order by totalAmount desc
+    </select>
+    <select id="selectDashboard" resultType="PmsDashboardVo">
+        select
+            (select count(1) from pms_product where del_flag = '0') as productCount,
+            (select count(1) from pms_product where del_flag = '0' and stock_qty &gt; 0 and stock_qty &lt; ifnull(#{warnThreshold},5)) as warnCount,
+            (select count(1) from pms_product where del_flag = '0' and stock_qty &lt;= 0) as emptyCount,
+            (select count(1) from pms_device where online_status = '0' or last_heartbeat is null or last_heartbeat &lt; date_sub(now(), interval 120 second)) as offlineDeviceCount,
+            (select count(1) from pms_logistics where pay_status = '0') as uncheckedCount,
+            (select count(1) from pms_logistics where pay_status in ('0','1')) as unpaidCount,
+            (select ifnull(sum(amount),0) from pms_sale where sale_time &gt;= #{beginTime} and sale_time &lt;= #{endTime}) as todayTurnover
+        from dual
+    </select>
+</mapper>

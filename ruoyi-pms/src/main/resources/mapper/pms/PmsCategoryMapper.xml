@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pms.mapper.PmsCategoryMapper">
+    <resultMap id="PmsCategoryResult" type="PmsCategory">
+        <id property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <sql id="selectVo">
+        select category_id, category_name, order_num, status, del_flag, create_by, create_time, update_by, update_time, remark from pms_category
+    </sql>
+    <select id="selectCategoryList" resultMap="PmsCategoryResult">
+        <include refid="selectVo"/>
+        <where>
+            del_flag = '0'
+            <if test="categoryName != null and categoryName != ''">AND category_name like concat('%', #{categoryName}, '%')</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
+        </where>
+        order by order_num, category_id
+    </select>
+    <select id="selectCategoryById" resultMap="PmsCategoryResult">
+        <include refid="selectVo"/> where category_id = #{categoryId}
+    </select>
+    <select id="checkCategoryNameUnique" resultMap="PmsCategoryResult">
+        <include refid="selectVo"/> where category_name = #{categoryName} and del_flag = '0' limit 1
+    </select>
+    <select id="countProductByCategoryId" resultType="int">
+        select count(1) from pms_product where category_id = #{categoryId} and del_flag = '0'
+    </select>
+    <insert id="insertCategory" useGeneratedKeys="true" keyProperty="categoryId">
+        insert into pms_category (category_name, order_num, status, del_flag, create_by, create_time, remark)
+        values (#{categoryName}, #{orderNum}, #{status}, '0', #{createBy}, sysdate(), #{remark})
+    </insert>
+    <update id="updateCategory">
+        update pms_category
+        <set>
+            <if test="categoryName != null">category_name = #{categoryName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_by = #{updateBy}, update_time = sysdate()
+        </set>
+        where category_id = #{categoryId}
+    </update>
+    <update id="deleteCategoryByIds">
+        update pms_category set del_flag = '2' where category_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </update>
+</mapper>
