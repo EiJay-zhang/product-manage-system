@@ -83,6 +83,19 @@ mvn spring-boot:run
 - 服务：`http://localhost:8080`
 - Swagger：`http://localhost:8080/swagger-ui/index.html`（分组「商品管理」）
 
+## 打包
+
+产物文件名是 `pms.jar`（`ruoyi-admin/pom.xml` 的 `finalName`）。
+
+```bash
+export JAVA_HOME="/opt/homebrew/opt/openjdk@17"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+mvn -pl ruoyi-admin -am package -DskipTests
+```
+
+产物路径：`ruoyi-admin/target/pms.jar`。生产部署说明见 `deploy/README.md`。
+
 ## 前端对接
 
 若依前端开发环境建议：

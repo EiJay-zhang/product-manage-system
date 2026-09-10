@@ -1,0 +1,22 @@
+[Unit]
+Description=Product Manage System (RuoYi)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/pms
+Environment=TZ=Asia/Shanghai
+ExecStart=/usr/bin/java -Xms256m -Xmx512m \
+  -Dfile.encoding=UTF-8 \
+  -Duser.home=/opt/pms \
+  -jar /opt/pms/pms.jar \
+  --spring.data.redis.host=127.0.0.1 \
+  --spring.datasource.druid.master.url=jdbc:mysql://127.0.0.1:3306/pms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%%2B8
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
