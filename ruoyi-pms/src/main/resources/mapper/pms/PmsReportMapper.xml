@@ -6,6 +6,7 @@
             (select count(1) from pms_product where del_flag = '0') as productCount,
             (select ifnull(sum(qty),0) from pms_purchase
                 <where>
+                    AND status = '0'
                     <if test="beginTime != null">AND purchase_time &gt;= #{beginTime}</if>
                     <if test="endTime != null">AND purchase_time &lt;= #{endTime}</if>
                     <if test="supplierId != null">AND supplier_id = #{supplierId}</if>
@@ -15,6 +16,7 @@
             (select ifnull(sum(stock_qty),0) from pms_product where del_flag = '0') as stockQty,
             (select ifnull(sum(amount),0) from pms_purchase
                 <where>
+                    AND status = '0'
                     <if test="beginTime != null">AND purchase_time &gt;= #{beginTime}</if>
                     <if test="endTime != null">AND purchase_time &lt;= #{endTime}</if>
                     <if test="supplierId != null">AND supplier_id = #{supplierId}</if>
@@ -32,7 +34,7 @@
                ifnull(sum(pu.qty),0) as purchaseQty,
                case when ifnull(sum(pu.qty),0) = 0 then p.purchase_price else sum(pu.amount)/sum(pu.qty) end as avgPrice
         from pms_product p
-        left join pms_purchase pu on pu.product_id = p.product_id
+        left join pms_purchase pu on pu.product_id = p.product_id AND pu.status = '0'
             <if test="beginTime != null">AND pu.purchase_time &gt;= #{beginTime}</if>
             <if test="endTime != null">AND pu.purchase_time &lt;= #{endTime}</if>
         where p.del_flag = '0'
@@ -52,7 +54,7 @@
                ifnull(sum(pu.amount),0) as totalAmount,
                count(distinct pu.product_id) as productCount
         from pms_supplier s
-        left join pms_purchase pu on pu.supplier_id = s.supplier_id
+        left join pms_purchase pu on pu.supplier_id = s.supplier_id AND pu.status = '0'
             <if test="beginTime != null">AND pu.purchase_time &gt;= #{beginTime}</if>
             <if test="endTime != null">AND pu.purchase_time &lt;= #{endTime}</if>
         where s.del_flag = '0'
@@ -68,7 +70,7 @@
             (select count(1) from pms_device where online_status = '0' or last_heartbeat is null or last_heartbeat &lt; date_sub(now(), interval 120 second)) as offlineDeviceCount,
             (select count(1) from pms_logistics where pay_status = '0') as uncheckedCount,
             (select count(1) from pms_logistics where pay_status in ('0','1')) as unpaidCount,
-            (select ifnull(sum(amount),0) from pms_sale where sale_time &gt;= #{beginTime} and sale_time &lt;= #{endTime}) as todayTurnover
+            (select ifnull(sum(amount),0) from pms_sale where status = '0' and sale_time &gt;= #{beginTime} and sale_time &lt;= #{endTime}) as todayTurnover
         from dual
     </select>
 </mapper>

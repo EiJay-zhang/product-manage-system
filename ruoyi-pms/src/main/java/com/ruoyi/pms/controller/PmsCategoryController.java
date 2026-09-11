@@ -1,5 +1,7 @@
 package com.ruoyi.pms.controller;
 
+import java.util.List;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -18,6 +20,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.pms.domain.PmsCategory;
 import com.ruoyi.pms.service.IPmsCategoryService;
 
@@ -36,6 +39,16 @@ public class PmsCategoryController extends BaseController
     {
         startPage();
         return getDataTable(categoryService.selectCategoryList(category));
+    }
+
+    @Log(title = "商品分类", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('pms:category:export')")
+    @PostMapping("/export")
+    @Operation(summary = "导出分类")
+    public void export(HttpServletResponse response, PmsCategory category)
+    {
+        List<PmsCategory> list = categoryService.selectCategoryList(category);
+        new ExcelUtil<PmsCategory>(PmsCategory.class).exportExcel(response, list, "商品分类");
     }
 
     @PreAuthorize("@ss.hasPermi('pms:category:query')")

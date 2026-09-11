@@ -1,372 +1,376 @@
 -- ----------------------------
--- ÉÌÆ·¹ÜÀíÏµÍ³ÒµÎñ±í + ²Ëµ¥È¨ÏŞ
--- Ö´ĞĞÇ°ÇëÏÈµ¼Èë sql/ry_20260417.sql Óë sql/quartz.sql
+-- å•†å“ç®¡ç†ç³»ç»Ÿä¸šåŠ¡è¡¨ + èœå•æƒé™
+-- æ‰§è¡Œå‰è¯·å…ˆå¯¼å…¥ sql/ry_20260417.sql ä¸ sql/quartz.sql
 -- ----------------------------
 create database if not exists pms default character set utf8mb4 collate utf8mb4_general_ci;
 use pms;
 
 -- ----------------------------
--- ¹©Ó¦ÉÌ
+-- ä¾›åº”å•†
 -- ----------------------------
 drop table if exists pms_supplier;
 create table pms_supplier (
-  supplier_id     bigint(20)      not null auto_increment    comment '³§¼ÒID',
-  supplier_name   varchar(100)    not null                   comment '³§¼ÒÃû³Æ',
-  contact_name    varchar(50)     default ''                 comment 'ÁªÏµÈË',
-  phone           varchar(20)     default ''                 comment 'ÁªÏµµç»°',
-  status          char(1)         default '0'                comment '×´Ì¬£¨0Õı³£ 1Í£ÓÃ£©',
-  del_flag        char(1)         default '0'                comment 'É¾³ı±êÖ¾£¨0´æÔÚ 2É¾³ı£©',
-  create_by       varchar(64)     default ''                 comment '´´½¨Õß',
-  create_time     datetime                                   comment '´´½¨Ê±¼ä',
-  update_by       varchar(64)     default ''                 comment '¸üĞÂÕß',
-  update_time     datetime                                   comment '¸üĞÂÊ±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  supplier_id     bigint(20)      not null auto_increment    comment 'å‚å®¶ID',
+  supplier_name   varchar(100)    not null                   comment 'å‚å®¶åç§°',
+  contact_name    varchar(50)     default ''                 comment 'è”ç³»äºº',
+  phone           varchar(20)     default ''                 comment 'è”ç³»ç”µè¯',
+  status          char(1)         default '0'                comment 'çŠ¶æ€ï¼ˆ0æ­£å¸¸ 1åœç”¨ï¼‰',
+  del_flag        char(1)         default '0'                comment 'åˆ é™¤æ ‡å¿—ï¼ˆ0å­˜åœ¨ 2åˆ é™¤ï¼‰',
+  create_by       varchar(64)     default ''                 comment 'åˆ›å»ºè€…',
+  create_time     datetime                                   comment 'åˆ›å»ºæ—¶é—´',
+  update_by       varchar(64)     default ''                 comment 'æ›´æ–°è€…',
+  update_time     datetime                                   comment 'æ›´æ–°æ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (supplier_id),
   unique key uk_supplier_name (supplier_name)
-) engine=innodb comment = '¹©Ó¦ÉÌ£¨½ø»õ³§¼Ò£©±í';
+) engine=innodb comment = 'ä¾›åº”å•†ï¼ˆè¿›è´§å‚å®¶ï¼‰è¡¨';
 
 -- ----------------------------
--- ÉÌÆ··ÖÀà
+-- å•†å“åˆ†ç±»
 -- ----------------------------
 drop table if exists pms_category;
 create table pms_category (
-  category_id     bigint(20)      not null auto_increment    comment '·ÖÀàID',
-  category_name   varchar(50)     not null                   comment '·ÖÀàÃû³Æ',
-  order_num       int(4)          default 0                  comment 'ÏÔÊ¾Ë³Ğò',
-  status          char(1)         default '0'                comment '×´Ì¬£¨0Õı³£ 1Í£ÓÃ£©',
-  del_flag        char(1)         default '0'                comment 'É¾³ı±êÖ¾£¨0´æÔÚ 2É¾³ı£©',
-  create_by       varchar(64)     default ''                 comment '´´½¨Õß',
-  create_time     datetime                                   comment '´´½¨Ê±¼ä',
-  update_by       varchar(64)     default ''                 comment '¸üĞÂÕß',
-  update_time     datetime                                   comment '¸üĞÂÊ±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  category_id     bigint(20)      not null auto_increment    comment 'åˆ†ç±»ID',
+  category_name   varchar(50)     not null                   comment 'åˆ†ç±»åç§°',
+  order_num       int(4)          default 0                  comment 'æ˜¾ç¤ºé¡ºåº',
+  status          char(1)         default '0'                comment 'çŠ¶æ€ï¼ˆ0æ­£å¸¸ 1åœç”¨ï¼‰',
+  del_flag        char(1)         default '0'                comment 'åˆ é™¤æ ‡å¿—ï¼ˆ0å­˜åœ¨ 2åˆ é™¤ï¼‰',
+  create_by       varchar(64)     default ''                 comment 'åˆ›å»ºè€…',
+  create_time     datetime                                   comment 'åˆ›å»ºæ—¶é—´',
+  update_by       varchar(64)     default ''                 comment 'æ›´æ–°è€…',
+  update_time     datetime                                   comment 'æ›´æ–°æ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (category_id),
   unique key uk_category_name (category_name)
-) engine=innodb comment = 'ÉÌÆ··ÖÀà±í';
+) engine=innodb comment = 'å•†å“åˆ†ç±»è¡¨';
 
 -- ----------------------------
--- ÉÌÆ·µµ°¸£¨¿â´æ¡¢×îĞÂ½ø¼ÛµÈÎªµ±Ç°¿ìÕÕ£»ÀúÊ·ÒÔ½ø»õ/ÏúÊÛÁ÷Ë®Îª×¼£©
+-- å•†å“æ¡£æ¡ˆï¼ˆåº“å­˜ã€æœ€æ–°è¿›ä»·ç­‰ä¸ºå½“å‰å¿«ç…§ï¼›å†å²ä»¥è¿›è´§/é”€å”®æµæ°´ä¸ºå‡†ï¼‰
 -- ----------------------------
 drop table if exists pms_product;
 create table pms_product (
-  product_id      bigint(20)      not null auto_increment    comment 'ÉÌÆ·ID',
-  product_code    varchar(32)     not null                   comment 'ÉÌÆ·±àºÅ£¨ÏµÍ³Éú³É£©',
-  product_name    varchar(100)    not null                   comment 'ÉÌÆ·Ãû³Æ',
-  spec            varchar(100)    not null                   comment 'ÉÌÆ·¹æ¸ñ',
-  category_id     bigint(20)      default null               comment '·ÖÀàID',
-  supplier_id     bigint(20)      not null                   comment 'µ±Ç°¹©»õ³§¼ÒID',
-  purchase_price  decimal(10,2)   not null                   comment 'µ±Ç°½ø¼Û£¨×î½üÒ»´Î½ø»õ£©',
-  sale_price      decimal(10,2)   not null                   comment 'ÊÛ¼Û',
-  stock_qty       int(11)         not null default 0         comment 'µ±Ç°¿â´æÊıÁ¿',
-  purchase_time   date            default null               comment '×î½ü½ø»õÈÕÆÚ',
-  intro           varchar(500)    default ''                 comment 'ÉÌÆ·¼ò½é',
-  del_flag        char(1)         default '0'                comment 'É¾³ı±êÖ¾£¨0´æÔÚ 2É¾³ı£©',
-  create_by       varchar(64)     default ''                 comment '´´½¨Õß',
-  create_time     datetime                                   comment '´´½¨Ê±¼ä',
-  update_by       varchar(64)     default ''                 comment '¸üĞÂÕß',
-  update_time     datetime                                   comment '¸üĞÂÊ±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  product_id      bigint(20)      not null auto_increment    comment 'å•†å“ID',
+  product_code    varchar(32)     not null                   comment 'å•†å“ç¼–å·ï¼ˆç³»ç»Ÿç”Ÿæˆï¼‰',
+  product_name    varchar(100)    not null                   comment 'å•†å“åç§°',
+  spec            varchar(100)    not null                   comment 'å•†å“è§„æ ¼',
+  category_id     bigint(20)      default null               comment 'åˆ†ç±»ID',
+  supplier_id     bigint(20)      not null                   comment 'å½“å‰ä¾›è´§å‚å®¶ID',
+  purchase_price  decimal(10,2)   not null                   comment 'å½“å‰è¿›ä»·ï¼ˆæœ€è¿‘ä¸€æ¬¡è¿›è´§ï¼‰',
+  sale_price      decimal(10,2)   not null                   comment 'å”®ä»·',
+  stock_qty       int(11)         not null default 0         comment 'å½“å‰åº“å­˜æ•°é‡',
+  purchase_time   date            default null               comment 'æœ€è¿‘è¿›è´§æ—¥æœŸ',
+  intro           varchar(500)    default ''                 comment 'å•†å“ç®€ä»‹',
+  del_flag        char(1)         default '0'                comment 'åˆ é™¤æ ‡å¿—ï¼ˆ0å­˜åœ¨ 2åˆ é™¤ï¼‰',
+  create_by       varchar(64)     default ''                 comment 'åˆ›å»ºè€…',
+  create_time     datetime                                   comment 'åˆ›å»ºæ—¶é—´',
+  update_by       varchar(64)     default ''                 comment 'æ›´æ–°è€…',
+  update_time     datetime                                   comment 'æ›´æ–°æ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (product_id),
   unique key uk_product_code (product_code),
   key idx_product_supplier (supplier_id),
   key idx_product_category (category_id),
   key idx_product_name (product_name)
-) engine=innodb comment = 'ÉÌÆ·ĞÅÏ¢±í';
+) engine=innodb comment = 'å•†å“ä¿¡æ¯è¡¨';
 
 -- ----------------------------
--- ½ø»õÌ¨ÕË£¨Ö»Ôö²»¸Ä²»É¾£©
+-- è¿›è´§å°è´¦ï¼ˆåªå¢ä¸æ”¹ä¸åˆ ï¼‰
 -- ----------------------------
 drop table if exists pms_purchase;
 create table pms_purchase (
-  purchase_id     bigint(20)      not null auto_increment    comment '½ø»õµ¥ID',
-  purchase_no     varchar(32)     not null                   comment '½ø»õµ¥ºÅ',
-  product_id      bigint(20)      not null                   comment 'ÉÌÆ·ID',
-  product_name    varchar(100)    default ''                 comment 'ÉÌÆ·Ãû³Æ¿ìÕÕ',
-  spec            varchar(100)    default ''                 comment '¹æ¸ñ¿ìÕÕ',
-  supplier_id     bigint(20)      not null                   comment '³§¼ÒID',
-  supplier_name   varchar(100)    default ''                 comment '³§¼ÒÃû³Æ¿ìÕÕ',
-  qty             int(11)         not null                   comment '½ø»õÊıÁ¿',
-  purchase_price  decimal(10,2)   not null                   comment '±¾´Î½ø¼Û',
-  amount          decimal(12,2)   not null                   comment '±¾´Î½ø»õ½ğ¶î',
-  purchase_time   date            not null                   comment '½ø»õÈÕÆÚ',
-  create_by       varchar(64)     default ''                 comment '²Ù×÷ÈË',
-  create_time     datetime                                   comment '´´½¨Ê±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  purchase_id     bigint(20)      not null auto_increment    comment 'è¿›è´§å•ID',
+  purchase_no     varchar(32)     not null                   comment 'è¿›è´§å•å·',
+  product_id      bigint(20)      not null                   comment 'å•†å“ID',
+  product_name    varchar(100)    default ''                 comment 'å•†å“åç§°å¿«ç…§',
+  spec            varchar(100)    default ''                 comment 'è§„æ ¼å¿«ç…§',
+  supplier_id     bigint(20)      not null                   comment 'å‚å®¶ID',
+  supplier_name   varchar(100)    default ''                 comment 'å‚å®¶åç§°å¿«ç…§',
+  qty             int(11)         not null                   comment 'è¿›è´§æ•°é‡',
+  purchase_price  decimal(10,2)   not null                   comment 'æœ¬æ¬¡è¿›ä»·',
+  amount          decimal(12,2)   not null                   comment 'æœ¬æ¬¡è¿›è´§é‡‘é¢',
+  purchase_time   date            not null                   comment 'è¿›è´§æ—¥æœŸ',
+  status          char(1)         default '0'                comment 'çŠ¶æ€ï¼ˆ0æ­£å¸¸ 1ä½œåºŸï¼‰',
+  create_by       varchar(64)     default ''                 comment 'æ“ä½œäºº',
+  create_time     datetime                                   comment 'åˆ›å»ºæ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (purchase_id),
   unique key uk_purchase_no (purchase_no),
   key idx_purchase_product (product_id),
   key idx_purchase_supplier (supplier_id),
   key idx_purchase_time (purchase_time)
-) engine=innodb comment = '½ø»õÌ¨ÕË±í';
+) engine=innodb comment = 'è¿›è´§å°è´¦è¡¨';
 
 -- ----------------------------
--- ¿â´æ±ä¶¯Á÷Ë®
+-- åº“å­˜å˜åŠ¨æµæ°´
 -- ----------------------------
 drop table if exists pms_stock_log;
 create table pms_stock_log (
-  log_id          bigint(20)      not null auto_increment    comment 'Á÷Ë®ID',
-  product_id      bigint(20)      not null                   comment 'ÉÌÆ·ID',
-  product_name    varchar(100)    default ''                 comment 'ÉÌÆ·Ãû³Æ¿ìÕÕ',
-  change_type     varchar(20)     not null                   comment 'ÀàĞÍ INÈë¿â CHECKÅÌµã LOSSËğºÄ TRANSFERµ÷²¦ SALEÏúÊÛ INIT½¨µµ',
-  before_qty      int(11)         not null                   comment '±ä¶¯Ç°¿â´æ',
-  change_qty      int(11)         not null                   comment '±ä¶¯ÊıÁ¿£¨¿É¸º£©',
-  after_qty       int(11)         not null                   comment '±ä¶¯ºó¿â´æ',
-  biz_type        varchar(20)     default ''                 comment 'ÒµÎñÀàĞÍ purchase/sale/adjust/product',
-  biz_id          bigint(20)      default null               comment 'ÒµÎñµ¥¾İID',
-  create_by       varchar(64)     default ''                 comment '²Ù×÷ÈË',
-  create_time     datetime                                   comment '±ä¶¯Ê±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  log_id          bigint(20)      not null auto_increment    comment 'æµæ°´ID',
+  product_id      bigint(20)      not null                   comment 'å•†å“ID',
+  product_name    varchar(100)    default ''                 comment 'å•†å“åç§°å¿«ç…§',
+  change_type     varchar(20)     not null                   comment 'ç±»å‹ INå…¥åº“ CHECKç›˜ç‚¹ LOSSæŸè€— TRANSFERè°ƒæ‹¨ SALEé”€å”® INITå»ºæ¡£',
+  before_qty      int(11)         not null                   comment 'å˜åŠ¨å‰åº“å­˜',
+  change_qty      int(11)         not null                   comment 'å˜åŠ¨æ•°é‡ï¼ˆå¯è´Ÿï¼‰',
+  after_qty       int(11)         not null                   comment 'å˜åŠ¨ååº“å­˜',
+  biz_type        varchar(20)     default ''                 comment 'ä¸šåŠ¡ç±»å‹ purchase/sale/adjust/product',
+  biz_id          bigint(20)      default null               comment 'ä¸šåŠ¡å•æ®ID',
+  create_by       varchar(64)     default ''                 comment 'æ“ä½œäºº',
+  create_time     datetime                                   comment 'å˜åŠ¨æ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (log_id),
   key idx_stock_product (product_id),
   key idx_stock_time (create_time),
   key idx_stock_type (change_type)
-) engine=innodb comment = '¿â´æ±ä¶¯Á÷Ë®±í';
+) engine=innodb comment = 'åº“å­˜å˜åŠ¨æµæ°´è¡¨';
 
 -- ----------------------------
--- ÏúÊÛ³ö¿â£¨Ö»Ôö²»¸Ä²»É¾£¬ÓªÒµ¶îÊı¾İÔ´£©
+-- é”€å”®å‡ºåº“ï¼ˆåªå¢ä¸æ”¹ä¸åˆ ï¼Œè¥ä¸šé¢æ•°æ®æºï¼‰
 -- ----------------------------
 drop table if exists pms_sale;
 create table pms_sale (
-  sale_id         bigint(20)      not null auto_increment    comment 'ÏúÊÛµ¥ID',
-  sale_no         varchar(32)     not null                   comment 'ÏúÊÛµ¥ºÅ',
-  product_id      bigint(20)      not null                   comment 'ÉÌÆ·ID',
-  product_name    varchar(100)    default ''                 comment 'ÉÌÆ·Ãû³Æ¿ìÕÕ',
-  spec            varchar(100)    default ''                 comment '¹æ¸ñ¿ìÕÕ',
-  category_id     bigint(20)      default null               comment '·ÖÀàID',
-  qty             int(11)         not null                   comment 'ÏúÊÛÊıÁ¿',
-  sale_price      decimal(10,2)   not null                   comment '³É½»ÊÛ¼Û¿ìÕÕ',
-  amount          decimal(12,2)   not null                   comment 'ÏúÊÛ½ğ¶î',
-  sale_time       datetime        not null                   comment 'ÏúÊÛÊ±¼ä',
-  create_by       varchar(64)     default ''                 comment '²Ù×÷ÈË',
-  create_time     datetime                                   comment '´´½¨Ê±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  sale_id         bigint(20)      not null auto_increment    comment 'é”€å”®å•ID',
+  sale_no         varchar(32)     not null                   comment 'é”€å”®å•å·',
+  product_id      bigint(20)      not null                   comment 'å•†å“ID',
+  product_name    varchar(100)    default ''                 comment 'å•†å“åç§°å¿«ç…§',
+  spec            varchar(100)    default ''                 comment 'è§„æ ¼å¿«ç…§',
+  category_id     bigint(20)      default null               comment 'åˆ†ç±»ID',
+  qty             int(11)         not null                   comment 'é”€å”®æ•°é‡',
+  sale_price      decimal(10,2)   not null                   comment 'æˆäº¤å”®ä»·å¿«ç…§',
+  amount          decimal(12,2)   not null                   comment 'é”€å”®é‡‘é¢',
+  sale_time       datetime        not null                   comment 'é”€å”®æ—¶é—´',
+  status          char(1)         default '0'                comment 'çŠ¶æ€ï¼ˆ0æ­£å¸¸ 1é€€è´§ï¼‰',
+  create_by       varchar(64)     default ''                 comment 'æ“ä½œäºº',
+  create_time     datetime                                   comment 'åˆ›å»ºæ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (sale_id),
   unique key uk_sale_no (sale_no),
   key idx_sale_product (product_id),
   key idx_sale_time (sale_time)
-) engine=innodb comment = 'ÏúÊÛ³ö¿â±í';
+) engine=innodb comment = 'é”€å”®å‡ºåº“è¡¨';
 
 -- ----------------------------
--- ÎïÁ÷¶ÔÕË£¨½ûÖ¹É¾³ı£©
+-- ç‰©æµå¯¹è´¦ï¼ˆç¦æ­¢åˆ é™¤ï¼‰
 -- ----------------------------
 drop table if exists pms_logistics;
 create table pms_logistics (
-  logistics_id    bigint(20)      not null auto_increment    comment 'ÎïÁ÷µ¥ID',
-  logistics_no    varchar(64)     not null                   comment 'ÎïÁ÷µ¥ºÅ',
-  purchase_id     bigint(20)      not null                   comment '¹ØÁª½ø»õÅú´Î',
-  product_id      bigint(20)      default null               comment '¶ÔÓ¦ÉÌÆ·',
-  supplier_id     bigint(20)      default null               comment '¹©»õ³§¼Ò',
-  carrier_id      bigint(20)      default null               comment 'ÎïÁ÷ÉÌID',
-  carrier         varchar(100)    default ''                 comment 'ÎïÁ÷·şÎñÉÌÃû³Æ¿ìÕÕ',
-  ship_time       datetime                                   comment '·¢»õÊ±¼ä',
-  arrive_time     datetime                                   comment 'µ½»õÊ±¼ä',
-  weight_volume   varchar(100)    default ''                 comment 'ÖØÁ¿/Ìå»ı',
-  freight         decimal(10,2)   default 0.00               comment 'ÔË·Ñ½ğ¶î',
-  insurance_fee   decimal(10,2)   default 0.00               comment '±£¼Û·Ñ',
-  other_fee       decimal(10,2)   default 0.00               comment 'ÆäËûÔÓ·Ñ',
-  total_fee       decimal(10,2)   default 0.00               comment '×ÜÎïÁ÷·ÑÓÃ',
-  pay_status      char(1)         default '0'                comment '¸¶¿î×´Ì¬£¨0Î´¶ÔÕË 1ÒÑ¶ÔÕË 2ÒÑ½áÇå£©',
-  reconcile_time  datetime                                   comment '¶ÔÕËÊ±¼ä',
-  reconcile_by    varchar(64)     default ''                 comment '¶ÔÕË²Ù×÷ÈË',
-  abnormal_flag   char(1)         default '0'                comment 'Òì³£±ê¼Ç£¨0·ñ 1ÊÇ£©',
-  abnormal_remark varchar(500)    default ''                 comment 'Òì³£±¸×¢',
-  create_by       varchar(64)     default ''                 comment '´´½¨Õß',
-  create_time     datetime                                   comment '´´½¨Ê±¼ä',
-  update_by       varchar(64)     default ''                 comment '¸üĞÂÕß',
-  update_time     datetime                                   comment '¸üĞÂÊ±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  logistics_id    bigint(20)      not null auto_increment    comment 'ç‰©æµå•ID',
+  logistics_no    varchar(64)     not null                   comment 'ç‰©æµå•å·',
+  purchase_id     bigint(20)      not null                   comment 'å…³è”è¿›è´§æ‰¹æ¬¡',
+  product_id      bigint(20)      default null               comment 'å¯¹åº”å•†å“',
+  supplier_id     bigint(20)      default null               comment 'ä¾›è´§å‚å®¶',
+  carrier_id      bigint(20)      default null               comment 'ç‰©æµå•†ID',
+  carrier         varchar(100)    default ''                 comment 'ç‰©æµæœåŠ¡å•†åç§°å¿«ç…§',
+  ship_time       datetime                                   comment 'å‘è´§æ—¶é—´',
+  arrive_time     datetime                                   comment 'åˆ°è´§æ—¶é—´',
+  weight_volume   varchar(100)    default ''                 comment 'é‡é‡/ä½“ç§¯',
+  freight         decimal(10,2)   default 0.00               comment 'è¿è´¹é‡‘é¢',
+  insurance_fee   decimal(10,2)   default 0.00               comment 'ä¿ä»·è´¹',
+  other_fee       decimal(10,2)   default 0.00               comment 'å…¶ä»–æ‚è´¹',
+  total_fee       decimal(10,2)   default 0.00               comment 'æ€»ç‰©æµè´¹ç”¨',
+  pay_status      char(1)         default '0'                comment 'ä»˜æ¬¾çŠ¶æ€ï¼ˆ0æœªå¯¹è´¦ 1å·²å¯¹è´¦ 2å·²ç»“æ¸…ï¼‰',
+  reconcile_time  datetime                                   comment 'å¯¹è´¦æ—¶é—´',
+  reconcile_by    varchar(64)     default ''                 comment 'å¯¹è´¦æ“ä½œäºº',
+  abnormal_flag   char(1)         default '0'                comment 'å¼‚å¸¸æ ‡è®°ï¼ˆ0å¦ 1æ˜¯ï¼‰',
+  abnormal_remark varchar(500)    default ''                 comment 'å¼‚å¸¸å¤‡æ³¨',
+  create_by       varchar(64)     default ''                 comment 'åˆ›å»ºè€…',
+  create_time     datetime                                   comment 'åˆ›å»ºæ—¶é—´',
+  update_by       varchar(64)     default ''                 comment 'æ›´æ–°è€…',
+  update_time     datetime                                   comment 'æ›´æ–°æ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (logistics_id),
   unique key uk_logistics_no (logistics_no),
   key idx_logistics_purchase (purchase_id),
   key idx_logistics_supplier (supplier_id),
   key idx_logistics_carrier (carrier_id),
   key idx_logistics_status (pay_status)
-) engine=innodb comment = 'ÎïÁ÷¶ÔÕË±í';
+) engine=innodb comment = 'ç‰©æµå¯¹è´¦è¡¨';
 
 -- ----------------------------
--- ÎïÁ÷ÉÌ
+-- ç‰©æµå•†
 -- ----------------------------
 drop table if exists pms_carrier;
 create table pms_carrier (
-  carrier_id      bigint(20)      not null auto_increment    comment 'ÎïÁ÷ÉÌID',
-  carrier_name    varchar(100)    not null                   comment 'ÎïÁ÷ÉÌÃû³Æ',
-  contact_name    varchar(50)     default ''                 comment 'ÁªÏµÈË',
-  phone           varchar(20)     default ''                 comment 'ÁªÏµµç»°',
-  status          char(1)         default '0'                comment '×´Ì¬£¨0Õı³£ 1Í£ÓÃ£©',
-  del_flag        char(1)         default '0'                comment 'É¾³ı±êÖ¾£¨0´æÔÚ 2É¾³ı£©',
-  create_by       varchar(64)     default ''                 comment '´´½¨Õß',
-  create_time     datetime                                   comment '´´½¨Ê±¼ä',
-  update_by       varchar(64)     default ''                 comment '¸üĞÂÕß',
-  update_time     datetime                                   comment '¸üĞÂÊ±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  carrier_id      bigint(20)      not null auto_increment    comment 'ç‰©æµå•†ID',
+  carrier_name    varchar(100)    not null                   comment 'ç‰©æµå•†åç§°',
+  contact_name    varchar(50)     default ''                 comment 'è”ç³»äºº',
+  phone           varchar(20)     default ''                 comment 'è”ç³»ç”µè¯',
+  status          char(1)         default '0'                comment 'çŠ¶æ€ï¼ˆ0æ­£å¸¸ 1åœç”¨ï¼‰',
+  del_flag        char(1)         default '0'                comment 'åˆ é™¤æ ‡å¿—ï¼ˆ0å­˜åœ¨ 2åˆ é™¤ï¼‰',
+  create_by       varchar(64)     default ''                 comment 'åˆ›å»ºè€…',
+  create_time     datetime                                   comment 'åˆ›å»ºæ—¶é—´',
+  update_by       varchar(64)     default ''                 comment 'æ›´æ–°è€…',
+  update_time     datetime                                   comment 'æ›´æ–°æ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (carrier_id),
   unique key uk_carrier_name (carrier_name)
-) engine=innodb comment = 'ÎïÁ÷ÉÌ±í';
+) engine=innodb comment = 'ç‰©æµå•†è¡¨';
 
 
 
 -- ----------------------------
--- Ä«Ë®ÆÁÉè±¸
+-- å¢¨æ°´å±è®¾å¤‡
 -- ----------------------------
 drop table if exists pms_device;
 create table pms_device (
-  device_id         bigint(20)      not null auto_increment  comment 'Éè±¸ID',
-  sn                varchar(64)     not null                 comment 'Éè±¸SN',
-  device_code       varchar(64)     default ''               comment 'Éè±¸±àºÅ',
-  product_id        bigint(20)      default null             comment '°ó¶¨ÉÌÆ·ID',
-  shelf_no          varchar(64)     default ''               comment '»õ¼Ü±àºÅ',
-  online_status     char(1)         default '0'              comment 'ÔÚÏß×´Ì¬£¨0ÀëÏß 1ÔÚÏß£©',
-  last_sync_time    datetime                                 comment '×îºóÍ¬²½Ê±¼ä',
-  last_heartbeat    datetime                                 comment '×îºóĞÄÌøÊ±¼ä',
-  battery           int(4)          default null             comment 'µçÁ¿',
-  firmware          varchar(64)     default ''               comment '¹Ì¼ş°æ±¾',
-  abnormal_flag     char(1)         default '0'              comment 'Òì³£±ê¼Ç£¨0·ñ 1ÊÇ£©',
-  abnormal_remark   varchar(500)    default ''               comment 'Òì³£±¸×¢',
-  bind_time         datetime                                 comment '°ó¶¨Ê±¼ä',
-  create_by         varchar(64)     default ''               comment '´´½¨Õß',
-  create_time       datetime                                 comment '´´½¨Ê±¼ä',
-  update_by         varchar(64)     default ''               comment '¸üĞÂÕß',
-  update_time       datetime                                 comment '¸üĞÂÊ±¼ä',
-  remark            varchar(500)    default null             comment '±¸×¢',
+  device_id         bigint(20)      not null auto_increment  comment 'è®¾å¤‡ID',
+  sn                varchar(64)     not null                 comment 'è®¾å¤‡SN',
+  device_code       varchar(64)     default ''               comment 'è®¾å¤‡ç¼–å·',
+  product_id        bigint(20)      default null             comment 'ç»‘å®šå•†å“ID',
+  shelf_no          varchar(64)     default ''               comment 'è´§æ¶ç¼–å·',
+  online_status     char(1)         default '0'              comment 'åœ¨çº¿çŠ¶æ€ï¼ˆ0ç¦»çº¿ 1åœ¨çº¿ï¼‰',
+  last_sync_time    datetime                                 comment 'æœ€ååŒæ­¥æ—¶é—´',
+  last_heartbeat    datetime                                 comment 'æœ€åå¿ƒè·³æ—¶é—´',
+  battery           int(4)          default null             comment 'ç”µé‡',
+  firmware          varchar(64)     default ''               comment 'å›ºä»¶ç‰ˆæœ¬',
+  abnormal_flag     char(1)         default '0'              comment 'å¼‚å¸¸æ ‡è®°ï¼ˆ0å¦ 1æ˜¯ï¼‰',
+  abnormal_remark   varchar(500)    default ''               comment 'å¼‚å¸¸å¤‡æ³¨',
+  bind_time         datetime                                 comment 'ç»‘å®šæ—¶é—´',
+  create_by         varchar(64)     default ''               comment 'åˆ›å»ºè€…',
+  create_time       datetime                                 comment 'åˆ›å»ºæ—¶é—´',
+  update_by         varchar(64)     default ''               comment 'æ›´æ–°è€…',
+  update_time       datetime                                 comment 'æ›´æ–°æ—¶é—´',
+  remark            varchar(500)    default null             comment 'å¤‡æ³¨',
   primary key (device_id),
   unique key uk_device_sn (sn),
   key idx_device_product (product_id)
-) engine=innodb comment = 'Ä«Ë®ÆÁÉè±¸±í';
+) engine=innodb comment = 'å¢¨æ°´å±è®¾å¤‡è¡¨';
 
 -- ----------------------------
--- Ä«Ë®ÆÁÍ¬²½ÈÕÖ¾
+-- å¢¨æ°´å±åŒæ­¥æ—¥å¿—
 -- ----------------------------
 drop table if exists pms_device_sync_log;
 create table pms_device_sync_log (
-  log_id          bigint(20)      not null auto_increment    comment 'ÈÕÖ¾ID',
-  device_id       bigint(20)      not null                   comment 'Éè±¸ID',
-  sn              varchar(64)     default ''                 comment 'Éè±¸SN',
-  product_id      bigint(20)      default null               comment 'ÉÌÆ·ID',
-  sync_content    varchar(2000)   default ''                 comment 'Í¬²½ÄÚÈİ',
-  sync_status     char(1)         default '0'                comment 'Í¬²½×´Ì¬£¨0Ê§°Ü 1³É¹¦ 2´ıÈ·ÈÏ£©',
-  command_type    varchar(20)     default 'refresh'          comment 'Ö¸Áî refresh/restart/unbind',
-  create_time     datetime                                   comment 'Í¬²½Ê±¼ä',
-  remark          varchar(500)    default null               comment '±¸×¢',
+  log_id          bigint(20)      not null auto_increment    comment 'æ—¥å¿—ID',
+  device_id       bigint(20)      not null                   comment 'è®¾å¤‡ID',
+  sn              varchar(64)     default ''                 comment 'è®¾å¤‡SN',
+  product_id      bigint(20)      default null               comment 'å•†å“ID',
+  sync_content    varchar(2000)   default ''                 comment 'åŒæ­¥å†…å®¹',
+  sync_status     char(1)         default '0'                comment 'åŒæ­¥çŠ¶æ€ï¼ˆ0å¤±è´¥ 1æˆåŠŸ 2å¾…ç¡®è®¤ï¼‰',
+  command_type    varchar(20)     default 'refresh'          comment 'æŒ‡ä»¤ refresh/restart/unbind',
+  create_time     datetime                                   comment 'åŒæ­¥æ—¶é—´',
+  remark          varchar(500)    default null               comment 'å¤‡æ³¨',
   primary key (log_id),
   key idx_sync_device (device_id),
   key idx_sync_time (create_time)
-) engine=innodb comment = 'Ä«Ë®ÆÁÍ¬²½ÈÕÖ¾±í';
+) engine=innodb comment = 'å¢¨æ°´å±åŒæ­¥æ—¥å¿—è¡¨';
 
 -- ----------------------------
--- ÒµÎñÅäÖÃ£¨µ¥ĞĞ£©
+-- ä¸šåŠ¡é…ç½®ï¼ˆå•è¡Œï¼‰
 -- ----------------------------
 drop table if exists pms_setting;
 create table pms_setting (
-  setting_id              bigint(20)      not null           comment 'ÅäÖÃID',
-  stock_warn_threshold    int(11)         default 5          comment '¿â´æÔ¤¾¯ãĞÖµ',
-  turnover_warn_min       decimal(12,2)   default null       comment 'ÓªÊÕÏÂÏŞ',
-  turnover_warn_max       decimal(12,2)   default null       comment 'ÓªÊÕÉÏÏŞ',
-  eink_sync_interval_sec  int(11)         default 0          comment 'Ä«Ë®ÆÁÍ¬²½ÆµÂÊÃë£¨0±íÊ¾ÊµÊ±ÍÆËÍ£©',
-  eink_font_style         varchar(50)     default 'default'  comment '×ÖÌåÑùÊ½',
-  show_name               char(1)         default 'Y'        comment 'Õ¹Ê¾Ãû³Æ',
-  show_spec               char(1)         default 'Y'        comment 'Õ¹Ê¾¹æ¸ñ',
-  show_sale_price         char(1)         default 'Y'        comment 'Õ¹Ê¾ÊÛ¼Û',
-  show_intro              char(1)         default 'Y'        comment 'Õ¹Ê¾¼ò½é',
-  show_stock              char(1)         default 'N'        comment 'Õ¹Ê¾¿â´æ',
-  show_supplier           char(1)         default 'N'        comment 'Õ¹Ê¾³§¼Ò',
-  update_by               varchar(64)     default ''         comment '¸üĞÂÕß',
-  update_time             datetime                           comment '¸üĞÂÊ±¼ä',
-  remark                  varchar(500)    default null       comment '±¸×¢',
+  setting_id              bigint(20)      not null           comment 'é…ç½®ID',
+  stock_warn_threshold    int(11)         default 5          comment 'åº“å­˜é¢„è­¦é˜ˆå€¼',
+  turnover_warn_min       decimal(12,2)   default null       comment 'è¥æ”¶ä¸‹é™',
+  turnover_warn_max       decimal(12,2)   default null       comment 'è¥æ”¶ä¸Šé™',
+  eink_sync_interval_sec  int(11)         default 0          comment 'å¢¨æ°´å±è½®è¯¢é—´éš”ç§’ï¼ˆ0è¡¨ç¤ºè¿‘å®æ—¶5ç§’ï¼ŒV1ä¸æ¥MQTTï¼‰',
+  eink_font_style         varchar(50)     default 'default'  comment 'å­—ä½“æ ·å¼',
+  show_name               char(1)         default 'Y'        comment 'å±•ç¤ºåç§°',
+  show_spec               char(1)         default 'Y'        comment 'å±•ç¤ºè§„æ ¼',
+  show_sale_price         char(1)         default 'Y'        comment 'å±•ç¤ºå”®ä»·',
+  show_intro              char(1)         default 'Y'        comment 'å±•ç¤ºç®€ä»‹',
+  show_stock              char(1)         default 'N'        comment 'å±•ç¤ºåº“å­˜',
+  show_supplier           char(1)         default 'N'        comment 'å±•ç¤ºå‚å®¶',
+  update_by               varchar(64)     default ''         comment 'æ›´æ–°è€…',
+  update_time             datetime                           comment 'æ›´æ–°æ—¶é—´',
+  remark                  varchar(500)    default null       comment 'å¤‡æ³¨',
   primary key (setting_id)
-) engine=innodb comment = 'ÉÌÆ·ÏµÍ³ÒµÎñÅäÖÃ±í';
+) engine=innodb comment = 'å•†å“ç³»ç»Ÿä¸šåŠ¡é…ç½®è¡¨';
 
 insert into pms_setting (setting_id, stock_warn_threshold, eink_sync_interval_sec, eink_font_style, show_name, show_spec, show_sale_price, show_intro, show_stock, show_supplier)
 values (1, 5, 0, 'default', 'Y', 'Y', 'Y', 'Y', 'N', 'N');
 
 -- ----------------------------
--- ×Öµä
+-- å­—å…¸
 -- ----------------------------
-insert into sys_dict_type values(100, 'ÎïÁ÷¸¶¿î×´Ì¬', 'pms_pay_status', '0', 'admin', sysdate(), '', null, 'ÎïÁ÷¶ÔÕË¸¶¿î×´Ì¬');
-insert into sys_dict_type values(101, '¿â´æ±ä¶¯ÀàĞÍ', 'pms_stock_change_type', '0', 'admin', sysdate(), '', null, '¿â´æÁ÷Ë®ÀàĞÍ');
-insert into sys_dict_type values(102, 'Éè±¸ÔÚÏß×´Ì¬', 'pms_online_status', '0', 'admin', sysdate(), '', null, 'Ä«Ë®ÆÁÔÚÏß×´Ì¬');
+insert into sys_dict_type values(100, 'ç‰©æµä»˜æ¬¾çŠ¶æ€', 'pms_pay_status', '0', 'admin', sysdate(), '', null, 'ç‰©æµå¯¹è´¦ä»˜æ¬¾çŠ¶æ€');
+insert into sys_dict_type values(101, 'åº“å­˜å˜åŠ¨ç±»å‹', 'pms_stock_change_type', '0', 'admin', sysdate(), '', null, 'åº“å­˜æµæ°´ç±»å‹');
+insert into sys_dict_type values(102, 'è®¾å¤‡åœ¨çº¿çŠ¶æ€', 'pms_online_status', '0', 'admin', sysdate(), '', null, 'å¢¨æ°´å±åœ¨çº¿çŠ¶æ€');
 
-insert into sys_dict_data values(1000, 1, 'Î´¶ÔÕË', '0', 'pms_pay_status', '', 'info',    'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1001, 2, 'ÒÑ¶ÔÕË', '1', 'pms_pay_status', '', 'warning', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1002, 3, 'ÒÑ½áÇå', '2', 'pms_pay_status', '', 'success', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1003, 1, 'Èë¿â', 'IN', 'pms_stock_change_type', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1004, 2, 'ÅÌµã', 'CHECK', 'pms_stock_change_type', '', 'info', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1005, 3, 'ËğºÄ', 'LOSS', 'pms_stock_change_type', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1006, 4, 'µ÷²¦', 'TRANSFER', 'pms_stock_change_type', '', 'warning', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1007, 5, 'ÏúÊÛ', 'SALE', 'pms_stock_change_type', '', 'success', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1008, 6, '½¨µµ', 'INIT', 'pms_stock_change_type', '', 'info', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1009, 1, 'ÀëÏß', '0', 'pms_online_status', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
-insert into sys_dict_data values(1010, 2, 'ÔÚÏß', '1', 'pms_online_status', '', 'success', 'Y', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1000, 1, 'æœªå¯¹è´¦', '0', 'pms_pay_status', '', 'info',    'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1001, 2, 'å·²å¯¹è´¦', '1', 'pms_pay_status', '', 'warning', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1002, 3, 'å·²ç»“æ¸…', '2', 'pms_pay_status', '', 'success', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1003, 1, 'å…¥åº“', 'IN', 'pms_stock_change_type', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1004, 2, 'ç›˜ç‚¹', 'CHECK', 'pms_stock_change_type', '', 'info', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1005, 3, 'æŸè€—', 'LOSS', 'pms_stock_change_type', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1006, 4, 'è°ƒæ‹¨', 'TRANSFER', 'pms_stock_change_type', '', 'warning', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1007, 5, 'é”€å”®', 'SALE', 'pms_stock_change_type', '', 'success', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1008, 6, 'å»ºæ¡£', 'INIT', 'pms_stock_change_type', '', 'info', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1009, 1, 'ç¦»çº¿', '0', 'pms_online_status', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '');
+insert into sys_dict_data values(1010, 2, 'åœ¨çº¿', '1', 'pms_online_status', '', 'success', 'Y', '0', 'admin', sysdate(), '', null, '');
 
 -- ----------------------------
--- ²Ëµ¥ 2100 Æğ£¬°´Å¥ 2200 Æğ
+-- èœå• 2100 èµ·ï¼ŒæŒ‰é’® 2200 èµ·
 -- ----------------------------
-insert into sys_menu values('2100', 'ÉÌÆ·¹ÜÀí', '0', '0', 'pms', null, '', '', 1, 0, 'M', '0', '0', '', 'shopping', 'admin', sysdate(), '', null, 'ÉÌÆ·¹ÜÀíÏµÍ³Ä¿Â¼');
-insert into sys_menu values('2101', '¾­Óª¿´°å', '2100', '1', 'dashboard', 'pms/dashboard/index', '', '', 1, 0, 'C', '0', '0', 'pms:dashboard:query', 'dashboard', 'admin', sysdate(), '', null, '¾­Óª¿´°å');
-insert into sys_menu values('2102', 'ÉÌÆ·ĞÅÏ¢', '2100', '2', 'product', 'pms/product/index', '', '', 1, 0, 'C', '0', '0', 'pms:product:list', 'list', 'admin', sysdate(), '', null, 'ÉÌÆ·ĞÅÏ¢²Ëµ¥');
-insert into sys_menu values('2103', 'ÉÌÆ··ÖÀà', '2100', '3', 'category', 'pms/category/index', '', '', 1, 0, 'C', '0', '0', 'pms:category:list', 'tree', 'admin', sysdate(), '', null, 'ÉÌÆ··ÖÀà²Ëµ¥');
-insert into sys_menu values('2104', '¹©Ó¦ÉÌ', '2100', '4', 'supplier', 'pms/supplier/index', '', '', 1, 0, 'C', '0', '0', 'pms:supplier:list', 'peoples', 'admin', sysdate(), '', null, '¹©Ó¦ÉÌ²Ëµ¥');
-insert into sys_menu values('2105', '½ø»õÈë¿â', '2100', '5', 'purchase', 'pms/purchase/index', '', '', 1, 0, 'C', '0', '0', 'pms:purchase:list', 'download', 'admin', sysdate(), '', null, '½ø»õÈë¿â²Ëµ¥');
-insert into sys_menu values('2106', '¿â´æÁ÷Ë®', '2100', '6', 'stock', 'pms/stock/index', '', '', 1, 0, 'C', '0', '0', 'pms:stock:log', 'redis-list', 'admin', sysdate(), '', null, '¿â´æÁ÷Ë®²Ëµ¥');
-insert into sys_menu values('2107', 'ÏúÊÛ³ö¿â', '2100', '7', 'sale', 'pms/sale/index', '', '', 1, 0, 'C', '0', '0', 'pms:sale:list', 'upload', 'admin', sysdate(), '', null, 'ÏúÊÛ³ö¿â²Ëµ¥');
-insert into sys_menu values('2108', 'ÎïÁ÷¶ÔÕË', '2100', '8', 'logistics', 'pms/logistics/index', '', '', 1, 0, 'C', '0', '0', 'pms:logistics:list', 'money', 'admin', sysdate(), '', null, 'ÎïÁ÷¶ÔÕË²Ëµ¥');
-insert into sys_menu values('2112', 'ÎïÁ÷ÉÌ', '2100', '8', 'carrier', 'pms/carrier/index', '', '', 1, 0, 'C', '0', '0', 'pms:carrier:list', 'guide', 'admin', sysdate(), '', null, 'ÎïÁ÷ÉÌ²Ëµ¥');
-insert into sys_menu values('2109', 'Ä«Ë®ÆÁÉè±¸', '2100', '9', 'device', 'pms/device/index', '', '', 1, 0, 'C', '0', '0', 'pms:device:list', 'server', 'admin', sysdate(), '', null, 'Ä«Ë®ÆÁÉè±¸²Ëµ¥');
-insert into sys_menu values('2110', '±¨±íÍ³¼Æ', '2100', '10', 'report', 'pms/report/index', '', '', 1, 0, 'C', '0', '0', 'pms:report:overview', 'chart', 'admin', sysdate(), '', null, '±¨±íÍ³¼Æ²Ëµ¥');
-insert into sys_menu values('2111', 'ÒµÎñÉèÖÃ', '2100', '11', 'setting', 'pms/setting/index', '', '', 1, 0, 'C', '0', '0', 'pms:setting:query', 'edit', 'admin', sysdate(), '', null, 'ÒµÎñÉèÖÃ²Ëµ¥');
+insert into sys_menu values('2100', 'å•†å“ç®¡ç†', '0', '0', 'pms', null, '', '', 1, 0, 'M', '0', '0', '', 'shopping', 'admin', sysdate(), '', null, 'å•†å“ç®¡ç†ç³»ç»Ÿç›®å½•');
+insert into sys_menu values('2101', 'ç»è¥çœ‹æ¿', '2100', '1', 'dashboard', 'pms/dashboard/index', '', '', 1, 0, 'C', '0', '0', 'pms:dashboard:query', 'dashboard', 'admin', sysdate(), '', null, 'ç»è¥çœ‹æ¿');
+insert into sys_menu values('2102', 'å•†å“ä¿¡æ¯', '2100', '2', 'product', 'pms/product/index', '', '', 1, 0, 'C', '0', '0', 'pms:product:list', 'list', 'admin', sysdate(), '', null, 'å•†å“ä¿¡æ¯èœå•');
+insert into sys_menu values('2103', 'å•†å“åˆ†ç±»', '2100', '3', 'category', 'pms/category/index', '', '', 1, 0, 'C', '0', '0', 'pms:category:list', 'tree', 'admin', sysdate(), '', null, 'å•†å“åˆ†ç±»èœå•');
+insert into sys_menu values('2104', 'ä¾›åº”å•†', '2100', '4', 'supplier', 'pms/supplier/index', '', '', 1, 0, 'C', '0', '0', 'pms:supplier:list', 'peoples', 'admin', sysdate(), '', null, 'ä¾›åº”å•†èœå•');
+insert into sys_menu values('2105', 'è¿›è´§å…¥åº“', '2100', '5', 'purchase', 'pms/purchase/index', '', '', 1, 0, 'C', '0', '0', 'pms:purchase:list', 'download', 'admin', sysdate(), '', null, 'è¿›è´§å…¥åº“èœå•');
+insert into sys_menu values('2106', 'åº“å­˜æµæ°´', '2100', '6', 'stock', 'pms/stock/index', '', '', 1, 0, 'C', '0', '0', 'pms:stock:log', 'redis-list', 'admin', sysdate(), '', null, 'åº“å­˜æµæ°´èœå•');
+insert into sys_menu values('2107', 'é”€å”®å‡ºåº“', '2100', '7', 'sale', 'pms/sale/index', '', '', 1, 0, 'C', '0', '0', 'pms:sale:list', 'upload', 'admin', sysdate(), '', null, 'é”€å”®å‡ºåº“èœå•');
+insert into sys_menu values('2108', 'ç‰©æµå¯¹è´¦', '2100', '8', 'logistics', 'pms/logistics/index', '', '', 1, 0, 'C', '0', '0', 'pms:logistics:list', 'money', 'admin', sysdate(), '', null, 'ç‰©æµå¯¹è´¦èœå•');
+insert into sys_menu values('2112', 'ç‰©æµå•†', '2100', '8', 'carrier', 'pms/carrier/index', '', '', 1, 0, 'C', '0', '0', 'pms:carrier:list', 'guide', 'admin', sysdate(), '', null, 'ç‰©æµå•†èœå•');
+insert into sys_menu values('2109', 'å¢¨æ°´å±è®¾å¤‡', '2100', '9', 'device', 'pms/device/index', '', '', 1, 0, 'C', '0', '0', 'pms:device:list', 'server', 'admin', sysdate(), '', null, 'å¢¨æ°´å±è®¾å¤‡èœå•');
+insert into sys_menu values('2110', 'æŠ¥è¡¨ç»Ÿè®¡', '2100', '10', 'report', 'pms/report/index', '', '', 1, 0, 'C', '0', '0', 'pms:report:overview', 'chart', 'admin', sysdate(), '', null, 'æŠ¥è¡¨ç»Ÿè®¡èœå•');
+insert into sys_menu values('2111', 'ä¸šåŠ¡è®¾ç½®', '2100', '11', 'setting', 'pms/setting/index', '', '', 1, 0, 'C', '0', '0', 'pms:setting:query', 'edit', 'admin', sysdate(), '', null, 'ä¸šåŠ¡è®¾ç½®èœå•');
 
--- ÉÌÆ·°´Å¥
-insert into sys_menu values('2201', 'ÉÌÆ·²éÑ¯', '2102', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2202', 'ÉÌÆ·ĞÂÔö', '2102', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2203', 'ÉÌÆ·ĞŞ¸Ä', '2102', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:edit', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2204', 'ÉÌÆ·É¾³ı', '2102', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:remove', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2205', 'ÉÌÆ·µ¼³ö', '2102', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:export', '#', 'admin', sysdate(), '', null, '');
--- ·ÖÀà°´Å¥
-insert into sys_menu values('2211', '·ÖÀà²éÑ¯', '2103', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2212', '·ÖÀàĞÂÔö', '2103', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2213', '·ÖÀàĞŞ¸Ä', '2103', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:edit', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2214', '·ÖÀàÉ¾³ı', '2103', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:remove', '#', 'admin', sysdate(), '', null, '');
--- ¹©Ó¦ÉÌ°´Å¥
-insert into sys_menu values('2221', '³§¼Ò²éÑ¯', '2104', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2222', '³§¼ÒĞÂÔö', '2104', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2223', '³§¼ÒĞŞ¸Ä', '2104', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:edit', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2224', '³§¼ÒÉ¾³ı', '2104', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:remove', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2225', '³§¼Òµ¼³ö', '2104', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:export', '#', 'admin', sysdate(), '', null, '');
--- ½ø»õ°´Å¥
-insert into sys_menu values('2231', '½ø»õ²éÑ¯', '2105', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:purchase:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2232', '½ø»õÈë¿â', '2105', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:purchase:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2233', '½ø»õµ¼³ö', '2105', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:purchase:export', '#', 'admin', sysdate(), '', null, '');
--- ¿â´æ°´Å¥
-insert into sys_menu values('2241', '¿â´æµ÷Õû', '2106', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:stock:adjust', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2242', 'Á÷Ë®µ¼³ö', '2106', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:stock:export', '#', 'admin', sysdate(), '', null, '');
--- ÏúÊÛ°´Å¥
-insert into sys_menu values('2251', 'ÏúÊÛ²éÑ¯', '2107', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:sale:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2252', 'ÏúÊÛ³ö¿â', '2107', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:sale:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2253', 'ÏúÊÛµ¼³ö', '2107', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:sale:export', '#', 'admin', sysdate(), '', null, '');
--- ÎïÁ÷°´Å¥
-insert into sys_menu values('2261', 'ÎïÁ÷²éÑ¯', '2108', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2262', 'ÎïÁ÷ĞÂÔö', '2108', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2263', 'ÎïÁ÷ĞŞ¸Ä', '2108', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:edit', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2264', 'ÎïÁ÷µ¼³ö', '2108', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:export', '#', 'admin', sysdate(), '', null, '');
--- ÎïÁ÷ÉÌ°´Å¥
-insert into sys_menu values('2292', 'ÎïÁ÷ÉÌ²éÑ¯', '2112', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2293', 'ÎïÁ÷ÉÌĞÂÔö', '2112', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2294', 'ÎïÁ÷ÉÌĞŞ¸Ä', '2112', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:edit', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2295', 'ÎïÁ÷ÉÌÉ¾³ı', '2112', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:remove', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2296', 'ÎïÁ÷ÉÌµ¼³ö', '2112', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:export', '#', 'admin', sysdate(), '', null, '');
--- Éè±¸°´Å¥
-insert into sys_menu values('2271', 'Éè±¸²éÑ¯', '2109', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2272', 'Éè±¸°ó¶¨', '2109', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:bind', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2273', 'Éè±¸½â°ó', '2109', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:unbind', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2274', 'Éè±¸²Ù×÷', '2109', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:operate', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2275', 'Í¬²½ÈÕÖ¾', '2109', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:log', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2276', 'Éè±¸µ¼³ö', '2109', '6', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:export', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2277', 'Ä£°åĞŞ¸Ä', '2109', '7', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:edit', '#', 'admin', sysdate(), '', null, '');
--- ±¨±í°´Å¥
-insert into sys_menu values('2281', '½ø»õ±¨±í', '2110', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:purchase', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2282', '¿â´æ±¨±í', '2110', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:stock', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2283', '³É±¾±¨±í', '2110', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:cost', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2284', '¹©Ó¦ÉÌ±¨±í', '2110', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:supplier', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2285', 'ÓªÒµ¶î±¨±í', '2110', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:turnover', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2286', '±¨±íµ¼³ö', '2110', '6', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:export', '#', 'admin', sysdate(), '', null, '');
--- ÉèÖÃ°´Å¥
-insert into sys_menu values('2291', 'ÉèÖÃĞŞ¸Ä', '2111', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:setting:edit', '#', 'admin', sysdate(), '', null, '');
+-- å•†å“æŒ‰é’®
+insert into sys_menu values('2201', 'å•†å“æŸ¥è¯¢', '2102', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2202', 'å•†å“æ–°å¢', '2102', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:add', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2203', 'å•†å“ä¿®æ”¹', '2102', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:edit', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2204', 'å•†å“åˆ é™¤', '2102', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:remove', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2205', 'å•†å“å¯¼å‡º', '2102', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:export', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2206', 'å•†å“å¯¼å…¥', '2102', '6', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:product:import', '#', 'admin', sysdate(), '', null, '');
+-- åˆ†ç±»æŒ‰é’®
+insert into sys_menu values('2211', 'åˆ†ç±»æŸ¥è¯¢', '2103', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2212', 'åˆ†ç±»æ–°å¢', '2103', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:add', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2213', 'åˆ†ç±»ä¿®æ”¹', '2103', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:edit', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2214', 'åˆ†ç±»åˆ é™¤', '2103', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:remove', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2215', 'åˆ†ç±»å¯¼å‡º', '2103', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:category:export', '#', 'admin', sysdate(), '', null, '');
+-- ä¾›åº”å•†æŒ‰é’®
+insert into sys_menu values('2221', 'å‚å®¶æŸ¥è¯¢', '2104', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2222', 'å‚å®¶æ–°å¢', '2104', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:add', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2223', 'å‚å®¶ä¿®æ”¹', '2104', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:edit', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2224', 'å‚å®¶åˆ é™¤', '2104', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:remove', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2225', 'å‚å®¶å¯¼å‡º', '2104', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:supplier:export', '#', 'admin', sysdate(), '', null, '');
+-- è¿›è´§æŒ‰é’®
+insert into sys_menu values('2231', 'è¿›è´§æŸ¥è¯¢', '2105', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:purchase:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2232', 'è¿›è´§å…¥åº“', '2105', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:purchase:add', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2233', 'è¿›è´§å¯¼å‡º', '2105', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:purchase:export', '#', 'admin', sysdate(), '', null, '');
+-- åº“å­˜æŒ‰é’®
+insert into sys_menu values('2241', 'åº“å­˜è°ƒæ•´', '2106', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:stock:adjust', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2242', 'æµæ°´å¯¼å‡º', '2106', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:stock:export', '#', 'admin', sysdate(), '', null, '');
+-- é”€å”®æŒ‰é’®
+insert into sys_menu values('2251', 'é”€å”®æŸ¥è¯¢', '2107', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:sale:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2252', 'é”€å”®å‡ºåº“', '2107', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:sale:add', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2253', 'é”€å”®å¯¼å‡º', '2107', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:sale:export', '#', 'admin', sysdate(), '', null, '');
+-- ç‰©æµæŒ‰é’®
+insert into sys_menu values('2261', 'ç‰©æµæŸ¥è¯¢', '2108', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2262', 'ç‰©æµæ–°å¢', '2108', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:add', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2263', 'ç‰©æµä¿®æ”¹', '2108', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:edit', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2264', 'ç‰©æµå¯¼å‡º', '2108', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:logistics:export', '#', 'admin', sysdate(), '', null, '');
+-- ç‰©æµå•†æŒ‰é’®
+insert into sys_menu values('2292', 'ç‰©æµå•†æŸ¥è¯¢', '2112', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2293', 'ç‰©æµå•†æ–°å¢', '2112', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:add', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2294', 'ç‰©æµå•†ä¿®æ”¹', '2112', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:edit', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2295', 'ç‰©æµå•†åˆ é™¤', '2112', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:remove', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2296', 'ç‰©æµå•†å¯¼å‡º', '2112', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:carrier:export', '#', 'admin', sysdate(), '', null, '');
+-- è®¾å¤‡æŒ‰é’®
+insert into sys_menu values('2271', 'è®¾å¤‡æŸ¥è¯¢', '2109', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:query', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2272', 'è®¾å¤‡ç»‘å®š', '2109', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:bind', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2273', 'è®¾å¤‡è§£ç»‘', '2109', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:unbind', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2274', 'è®¾å¤‡æ“ä½œ', '2109', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:operate', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2275', 'åŒæ­¥æ—¥å¿—', '2109', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:log', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2276', 'è®¾å¤‡å¯¼å‡º', '2109', '6', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:export', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2277', 'æ¨¡æ¿ä¿®æ”¹', '2109', '7', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:device:edit', '#', 'admin', sysdate(), '', null, '');
+-- æŠ¥è¡¨æŒ‰é’®
+insert into sys_menu values('2281', 'è¿›è´§æŠ¥è¡¨', '2110', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:purchase', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2282', 'åº“å­˜æŠ¥è¡¨', '2110', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:stock', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2283', 'æˆæœ¬æŠ¥è¡¨', '2110', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:cost', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2284', 'ä¾›åº”å•†æŠ¥è¡¨', '2110', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:supplier', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2285', 'è¥ä¸šé¢æŠ¥è¡¨', '2110', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:turnover', '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('2286', 'æŠ¥è¡¨å¯¼å‡º', '2110', '6', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:report:export', '#', 'admin', sysdate(), '', null, '');
+-- è®¾ç½®æŒ‰é’®
+insert into sys_menu values('2291', 'è®¾ç½®ä¿®æ”¹', '2111', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'pms:setting:edit', '#', 'admin', sysdate(), '', null, '');

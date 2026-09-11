@@ -26,6 +26,13 @@
         </where>
         order by log_id desc
     </select>
+    <select id="selectLatestPendingBySn" resultMap="PmsDeviceSyncLogResult">
+        select log_id, device_id, sn, product_id, sync_content, sync_status, command_type, create_time, remark
+        from pms_device_sync_log
+        where sn = #{sn} and sync_status = '2'
+        order by log_id desc
+        limit 1
+    </select>
     <insert id="insertSyncLog" useGeneratedKeys="true" keyProperty="logId">
         insert into pms_device_sync_log (device_id, sn, product_id, sync_content, sync_status, command_type, create_time, remark)
         values (#{deviceId}, #{sn}, #{productId}, #{syncContent}, #{syncStatus}, #{commandType}, sysdate(), #{remark})

@@ -15,6 +15,7 @@ import com.ruoyi.pms.domain.PmsSupplier;
 import com.ruoyi.pms.mapper.PmsProductMapper;
 import com.ruoyi.pms.mapper.PmsPurchaseMapper;
 import com.ruoyi.pms.mapper.PmsSupplierMapper;
+import com.ruoyi.pms.mapper.PmsLogisticsMapper;
 import com.ruoyi.pms.service.IPmsInventoryService;
 import com.ruoyi.pms.service.IPmsPurchaseService;
 import com.ruoyi.pms.util.PmsNoUtils;
@@ -30,6 +31,8 @@ public class PmsPurchaseServiceImpl implements IPmsPurchaseService
     private PmsSupplierMapper supplierMapper;
     @Autowired
     private IPmsInventoryService inventoryService;
+    @Autowired
+    private PmsLogisticsMapper logisticsMapper;
 
     @Override
     public PmsPurchase selectPurchaseById(Long purchaseId)
@@ -77,6 +80,7 @@ public class PmsPurchaseServiceImpl implements IPmsPurchaseService
         purchase.setSupplierId(supplierId);
         purchase.setSupplierName(supplier.getSupplierName());
         purchase.setAmount(purchase.getPurchasePrice().multiply(new BigDecimal(purchase.getQty())));
+        purchase.setStatus(PmsConstants.BILL_NORMAL);
         int rows = purchaseMapper.insertPurchase(purchase);
 
         int after = (product.getStockQty() == null ? 0 : product.getStockQty()) + purchase.getQty();
@@ -91,5 +95,39 @@ public class PmsPurchaseServiceImpl implements IPmsPurchaseService
         product.setStockQty(product.getStockQty() == null ? 0 : product.getStockQty());
         inventoryService.changeStock(product, after, PmsConstants.STOCK_IN, "purchase", purchase.getPurchaseId(), "进货入库", purchase.getCreateBy());
         return rows;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int voidPurchase(Long purchaseId, String operator)
+    {
+        PmsPurchase bill = purchaseMapper.selectPurchaseById(purchaseId);
+        if (bill == null)
+        {
+            throw new ServiceException("进货单不存在");
+        }
+        if (PmsConstants.BILL_VOID.equals(bill.getStatus()))
+        {
+            throw new ServiceException("进货单已作废");
+        }
+        if (logisticsMapper.countByPurchaseId(purchaseId) > 0)
+        {
+            throw new ServiceException("该进货单已关联物流对账单，请先处理物流单");
+        }
+        PmsProduct product = productMapper.selectProductById(bill.getProductId());
+        if (product == null || PmsConstants.DEL_REMOVED.equals(product.getDelFlag()))
+        {
+            throw new ServiceException("商品不存在");
+        }
+        int stock = product.getStockQty() == null ? 0 : product.getStockQty();
+        int after = stock - bill.getQty();
+        if (after < 0)
+        {
+            throw new ServiceException("库存不足，无法作废。当前库存 " + stock + "，进货数量 " + bill.getQty());
+        }
+        inventoryService.changeStock(product, after, PmsConstants.STOCK_VOID, "purchase", bill.getPurchaseId(),
+            "进货作废 " + bill.getPurchaseNo(), operator);
+        bill.setStatus(PmsConstants.BILL_VOID);
+        return purchaseMapper.updatePurchaseStatus(bill);
     }
 }

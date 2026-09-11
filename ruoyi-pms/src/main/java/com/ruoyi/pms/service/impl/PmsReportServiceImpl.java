@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.pms.constant.PmsConstants;
 import com.ruoyi.pms.domain.PmsPurchase;
 import com.ruoyi.pms.domain.PmsSale;
 import com.ruoyi.pms.domain.PmsSetting;
@@ -110,6 +111,7 @@ public class PmsReportServiceImpl implements IPmsReportService
         q.setSupplierId(query.getSupplierId());
         q.setBeginTime(query.getBeginTime());
         q.setEndTime(query.getEndTime());
+        q.setStatus(PmsConstants.BILL_NORMAL);
         return purchaseMapper.selectPurchaseList(q);
     }
 
@@ -230,6 +232,7 @@ public class PmsReportServiceImpl implements IPmsReportService
         sale.setCategoryId(query.getCategoryId());
         sale.setBeginTime(query.getBeginTime());
         sale.setEndTime(query.getEndTime());
+        sale.setStatus(PmsConstants.BILL_NORMAL);
         return saleMapper.selectSaleList(sale);
     }
 

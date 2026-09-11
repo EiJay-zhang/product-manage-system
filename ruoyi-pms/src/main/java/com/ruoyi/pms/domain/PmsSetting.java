@@ -23,7 +23,7 @@ public class PmsSetting extends BaseEntity
     /** 营收上限 */
     private BigDecimal turnoverWarnMax;
 
-    /** 同步频率秒 */
+    /** 墨水屏轮询间隔秒；null/<=0 时下发 5 秒，V1 不接 MQTT */
     private Integer einkSyncIntervalSec;
 
     /** 字体样式 */

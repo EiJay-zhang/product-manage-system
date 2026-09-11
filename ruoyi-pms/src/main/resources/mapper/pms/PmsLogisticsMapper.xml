@@ -138,4 +138,7 @@
     <select id="countByPayStatus" resultType="int">
         select count(1) from pms_logistics where pay_status = #{payStatus}
     </select>
+    <select id="countByPurchaseId" resultType="int">
+        select count(1) from pms_logistics where purchase_id = #{purchaseId}
+    </select>
 </mapper>

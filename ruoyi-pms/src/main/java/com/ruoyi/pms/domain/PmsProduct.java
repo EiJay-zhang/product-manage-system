@@ -15,7 +15,7 @@ public class PmsProduct extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    @Excel(name = "商品ID", cellType = Excel.ColumnType.NUMERIC)
+    @Excel(name = "商品ID", cellType = Excel.ColumnType.NUMERIC, type = Excel.Type.EXPORT)
     /** 商品ID */
     private Long productId;
 

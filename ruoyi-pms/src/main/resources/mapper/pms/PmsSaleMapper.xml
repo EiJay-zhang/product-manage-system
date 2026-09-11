@@ -12,6 +12,7 @@
         <result property="salePrice" column="sale_price"/>
         <result property="amount" column="amount"/>
         <result property="saleTime" column="sale_time"/>
+        <result property="status" column="status"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
         <result property="remark" column="remark"/>
@@ -21,6 +22,7 @@
             <if test="productId != null">AND product_id = #{productId}</if>
             <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>
             <if test="categoryId != null">AND category_id = #{categoryId}</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
             <if test="beginTime != null">AND sale_time &gt;= #{beginTime}</if>
             <if test="endTime != null">AND sale_time &lt;= #{endTime}</if>
             <if test="params.beginTime != null and params.beginTime != ''">AND sale_time &gt;= #{params.beginTime}</if>
@@ -28,23 +30,27 @@
         </where>
     </sql>
     <select id="selectSaleList" resultMap="PmsSaleResult">
-        select sale_id, sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, create_by, create_time, remark
+        select sale_id, sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, status, create_by, create_time, remark
         from pms_sale
         <include refid="saleWhere"/>
         order by sale_id desc
     </select>
     <select id="selectSaleById" resultMap="PmsSaleResult">
-        select sale_id, sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, create_by, create_time, remark
+        select sale_id, sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, status, create_by, create_time, remark
         from pms_sale where sale_id = #{saleId}
     </select>
     <select id="selectMaxSaleNo" resultType="String">
         select max(sale_no) from pms_sale where sale_no like concat(#{prefix}, '%')
     </select>
     <insert id="insertSale" useGeneratedKeys="true" keyProperty="saleId">
-        insert into pms_sale (sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, create_by, create_time, remark)
-        values (#{saleNo}, #{productId}, #{productName}, #{spec}, #{categoryId}, #{qty}, #{salePrice}, #{amount}, #{saleTime}, #{createBy}, sysdate(), #{remark})
+        insert into pms_sale (sale_no, product_id, product_name, spec, category_id, qty, sale_price, amount, sale_time, status, create_by, create_time, remark)
+        values (#{saleNo}, #{productId}, #{productName}, #{spec}, #{categoryId}, #{qty}, #{salePrice}, #{amount}, #{saleTime}, ifnull(#{status}, '0'), #{createBy}, sysdate(), #{remark})
     </insert>
+    <update id="updateSaleStatus">
+        update pms_sale set status = #{status} where sale_id = #{saleId}
+    </update>
     <sql id="reportTime">
+        AND status = '0'
         <if test="beginTime != null">AND sale_time &gt;= #{beginTime}</if>
         <if test="endTime != null">AND sale_time &lt;= #{endTime}</if>
         <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>

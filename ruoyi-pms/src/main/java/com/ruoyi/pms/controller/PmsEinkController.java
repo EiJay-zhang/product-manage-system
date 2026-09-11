@@ -14,6 +14,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.pms.domain.PmsDevice;
 import com.ruoyi.pms.domain.PmsDeviceSyncLog;
+import com.ruoyi.pms.domain.vo.PmsEinkContentVo;
 import com.ruoyi.pms.service.IPmsDeviceService;
 
 @Anonymous
@@ -29,7 +30,13 @@ public class PmsEinkController extends BaseController
     @Operation(summary = "设备心跳")
     public AjaxResult heartbeat(@RequestBody PmsDevice device)
     {
-        return success(deviceService.heartbeat(device));
+        PmsDevice exist = deviceService.heartbeat(device);
+        PmsEinkContentVo content = deviceService.content(exist.getSn());
+        AjaxResult ajax = success(exist);
+        ajax.put("pollIntervalSec", content.getPollIntervalSec());
+        ajax.put("pendingCommand", content.getPendingCommand());
+        ajax.put("pendingLogId", content.getPendingLogId());
+        return ajax;
     }
 
     @GetMapping("/content/{sn}")

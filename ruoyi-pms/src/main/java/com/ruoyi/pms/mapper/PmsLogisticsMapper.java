@@ -17,4 +17,5 @@ public interface PmsLogisticsMapper
     public List<PmsLogisticsStatsVo> selectCarrierStats(PmsReportQuery query);
     public List<PmsLogisticsStatsVo> selectSupplierStats(PmsReportQuery query);
     public int countByPayStatus(String payStatus);
+    public int countByPurchaseId(Long purchaseId);
 }

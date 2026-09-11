@@ -65,6 +65,10 @@ public class PmsPurchase extends BaseEntity
     /** 结束时间 */
     private Date endTime;
 
+    @Excel(name = "状态", readConverterExp = "0=正常,1=作废")
+    /** 状态（0正常 1作废） */
+    private String status;
+
     public Long getPurchaseId()
     {
         return purchaseId;
@@ -197,6 +201,16 @@ public class PmsPurchase extends BaseEntity
     public void setEndTime(Date endTime)
     {
         this.endTime = endTime;
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
     }
 
 }

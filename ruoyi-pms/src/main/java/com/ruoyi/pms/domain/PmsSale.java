@@ -61,6 +61,10 @@ public class PmsSale extends BaseEntity
     /** 结束 */
     private Date endTime;
 
+    @Excel(name = "状态", readConverterExp = "0=正常,1=已退货")
+    /** 状态（0正常 1已退货） */
+    private String status;
+
     public Long getSaleId()
     {
         return saleId;
@@ -181,6 +185,16 @@ public class PmsSale extends BaseEntity
     public void setEndTime(Date endTime)
     {
         this.endTime = endTime;
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
     }
 
 }

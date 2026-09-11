@@ -75,8 +75,34 @@ public class PmsSaleServiceImpl implements IPmsSaleService
         sale.setSpec(product.getSpec());
         sale.setCategoryId(product.getCategoryId());
         sale.setAmount(sale.getSalePrice().multiply(new BigDecimal(sale.getQty())));
+        sale.setStatus(PmsConstants.BILL_NORMAL);
         int rows = saleMapper.insertSale(sale);
         inventoryService.changeStock(product, stock - sale.getQty(), PmsConstants.STOCK_SALE, "sale", sale.getSaleId(), "销售出库", sale.getCreateBy());
         return rows;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int voidSale(Long saleId, String operator)
+    {
+        PmsSale bill = saleMapper.selectSaleById(saleId);
+        if (bill == null)
+        {
+            throw new ServiceException("销售单不存在");
+        }
+        if (PmsConstants.BILL_VOID.equals(bill.getStatus()))
+        {
+            throw new ServiceException("销售单已退货");
+        }
+        PmsProduct product = productMapper.selectProductById(bill.getProductId());
+        if (product == null || PmsConstants.DEL_REMOVED.equals(product.getDelFlag()))
+        {
+            throw new ServiceException("商品不存在");
+        }
+        int stock = product.getStockQty() == null ? 0 : product.getStockQty();
+        inventoryService.changeStock(product, stock + bill.getQty(), PmsConstants.STOCK_RETURN, "sale", bill.getSaleId(),
+            "销售退货 " + bill.getSaleNo(), operator);
+        bill.setStatus(PmsConstants.BILL_VOID);
+        return saleMapper.updateSaleStatus(bill);
     }
 }

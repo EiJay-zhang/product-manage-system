@@ -13,12 +13,13 @@
         <result property="purchasePrice" column="purchase_price"/>
         <result property="amount" column="amount"/>
         <result property="purchaseTime" column="purchase_time"/>
+        <result property="status" column="status"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
         <result property="remark" column="remark"/>
     </resultMap>
     <sql id="selectVo">
-        select purchase_id, purchase_no, product_id, product_name, spec, supplier_id, supplier_name, qty, purchase_price, amount, purchase_time, create_by, create_time, remark from pms_purchase
+        select purchase_id, purchase_no, product_id, product_name, spec, supplier_id, supplier_name, qty, purchase_price, amount, purchase_time, status, create_by, create_time, remark from pms_purchase
     </sql>
     <select id="selectPurchaseList" resultMap="PmsPurchaseResult">
         <include refid="selectVo"/>
@@ -27,6 +28,7 @@
             <if test="supplierId != null">AND supplier_id = #{supplierId}</if>
             <if test="productName != null and productName != ''">AND product_name like concat('%', #{productName}, '%')</if>
             <if test="purchaseNo != null and purchaseNo != ''">AND purchase_no like concat('%', #{purchaseNo}, '%')</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
             <if test="beginTime != null">AND purchase_time &gt;= #{beginTime}</if>
             <if test="endTime != null">AND purchase_time &lt;= #{endTime}</if>
             <if test="params.beginTime != null and params.beginTime != ''">AND purchase_time &gt;= #{params.beginTime}</if>
@@ -41,7 +43,10 @@
         select max(purchase_no) from pms_purchase where purchase_no like concat(#{prefix}, '%')
     </select>
     <insert id="insertPurchase" useGeneratedKeys="true" keyProperty="purchaseId">
-        insert into pms_purchase (purchase_no, product_id, product_name, spec, supplier_id, supplier_name, qty, purchase_price, amount, purchase_time, create_by, create_time, remark)
-        values (#{purchaseNo}, #{productId}, #{productName}, #{spec}, #{supplierId}, #{supplierName}, #{qty}, #{purchasePrice}, #{amount}, #{purchaseTime}, #{createBy}, sysdate(), #{remark})
+        insert into pms_purchase (purchase_no, product_id, product_name, spec, supplier_id, supplier_name, qty, purchase_price, amount, purchase_time, status, create_by, create_time, remark)
+        values (#{purchaseNo}, #{productId}, #{productName}, #{spec}, #{supplierId}, #{supplierName}, #{qty}, #{purchasePrice}, #{amount}, #{purchaseTime}, ifnull(#{status}, '0'), #{createBy}, sysdate(), #{remark})
     </insert>
+    <update id="updatePurchaseStatus">
+        update pms_purchase set status = #{status} where purchase_id = #{purchaseId}
+    </update>
 </mapper>

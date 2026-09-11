@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import com.ruoyi.common.annotation.Log;
@@ -57,6 +58,24 @@ public class PmsProductController extends BaseController
     {
         List<PmsProduct> list = productService.selectProductList(product);
         new ExcelUtil<PmsProduct>(PmsProduct.class).exportExcel(response, list, "商品数据");
+    }
+
+    @Log(title = "商品信息", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('pms:product:import')")
+    @PostMapping("/importData")
+    @Operation(summary = "导入商品")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<PmsProduct> util = new ExcelUtil<PmsProduct>(PmsProduct.class);
+        List<PmsProduct> list = util.importExcel(file.getInputStream());
+        return success(productService.importProduct(list, Boolean.valueOf(updateSupport), getUsername()));
+    }
+
+    @PostMapping("/importTemplate")
+    @Operation(summary = "下载商品导入模板")
+    public void importTemplate(HttpServletResponse response)
+    {
+        new ExcelUtil<PmsProduct>(PmsProduct.class).importTemplateExcel(response, "商品数据");
     }
 
     @PreAuthorize("@ss.hasPermi('pms:product:query')")

@@ -10,4 +10,5 @@ public interface IPmsProductService
     public int insertProduct(PmsProduct product);
     public int updateProduct(PmsProduct product);
     public int deleteProductByIds(Long[] productIds);
+    public String importProduct(List<PmsProduct> products, Boolean updateSupport, String operName);
 }

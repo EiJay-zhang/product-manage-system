@@ -23,7 +23,7 @@ public class PmsStockLog extends BaseEntity
     /** 商品名称 */
     private String productName;
 
-    @Excel(name = "操作类型", readConverterExp = "IN=入库,CHECK=盘点,LOSS=损耗,TRANSFER=调拨,SALE=销售,INIT=建档")
+    @Excel(name = "操作类型", readConverterExp = "IN=入库,CHECK=盘点,LOSS=损耗,TRANSFER=调拨,SALE=销售,INIT=建档,VOID=作废,RETURN=退货")
     /** 变动类型 */
     private String changeType;
 

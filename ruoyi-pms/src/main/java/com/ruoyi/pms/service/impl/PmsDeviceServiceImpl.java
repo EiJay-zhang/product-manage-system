@@ -282,6 +282,19 @@ public class PmsDeviceServiceImpl implements IPmsDeviceService
         return buildContent(device);
     }
 
+    private void fillPollAndPending(PmsDevice device, PmsEinkContentVo vo)
+    {
+        PmsSetting tpl = settingMapper.selectSetting();
+        Integer configured = tpl == null ? null : tpl.getEinkSyncIntervalSec();
+        vo.setPollIntervalSec(Integer.valueOf(PmsConstants.resolvePollIntervalSec(configured)));
+        PmsDeviceSyncLog pending = syncLogMapper.selectLatestPendingBySn(device.getSn());
+        if (pending != null)
+        {
+            vo.setPendingCommand(pending.getCommandType());
+            vo.setPendingLogId(pending.getLogId());
+        }
+    }
+
     private PmsEinkContentVo buildContent(PmsDevice device)
     {
         PmsSetting tpl = settingMapper.selectSetting();
@@ -291,12 +304,14 @@ public class PmsDeviceServiceImpl implements IPmsDeviceService
         if (device.getProductId() == null)
         {
             vo.setEmpty("Y");
+            fillPollAndPending(device, vo);
             return vo;
         }
         PmsProduct product = productMapper.selectProductById(device.getProductId());
         if (product == null)
         {
             vo.setEmpty("Y");
+            fillPollAndPending(device, vo);
             return vo;
         }
         if (tpl == null || PmsConstants.YES.equals(tpl.getShowName()))
@@ -324,6 +339,7 @@ public class PmsDeviceServiceImpl implements IPmsDeviceService
             vo.setSupplierName(product.getSupplierName());
         }
         vo.setEmpty("N");
+        fillPollAndPending(device, vo);
         return vo;
     }
 

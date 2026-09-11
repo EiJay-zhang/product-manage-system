@@ -9,4 +9,5 @@ public interface PmsPurchaseMapper
     public List<PmsPurchase> selectPurchaseList(PmsPurchase purchase);
     public String selectMaxPurchaseNo(String prefix);
     public int insertPurchase(PmsPurchase purchase);
+    public int updatePurchaseStatus(PmsPurchase purchase);
 }

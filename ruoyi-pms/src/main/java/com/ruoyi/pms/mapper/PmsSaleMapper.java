@@ -12,6 +12,7 @@ public interface PmsSaleMapper
     public List<PmsSale> selectSaleList(PmsSale sale);
     public String selectMaxSaleNo(String prefix);
     public int insertSale(PmsSale sale);
+    public int updateSaleStatus(PmsSale sale);
     public PmsTurnoverVo selectTurnoverSummary(PmsReportQuery query);
     public List<PmsChartPoint> selectTurnoverTrend(PmsReportQuery query);
     public List<PmsChartPoint> selectTurnoverRank(PmsReportQuery query);

@@ -8,4 +8,5 @@ public interface IPmsSaleService
     public PmsSale selectSaleById(Long saleId);
     public List<PmsSale> selectSaleList(PmsSale sale);
     public int insertSale(PmsSale sale);
+    public int voidSale(Long saleId, String operator);
 }

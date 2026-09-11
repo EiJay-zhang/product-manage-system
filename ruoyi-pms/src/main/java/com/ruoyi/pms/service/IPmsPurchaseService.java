@@ -8,4 +8,5 @@ public interface IPmsPurchaseService
     public PmsPurchase selectPurchaseById(Long purchaseId);
     public List<PmsPurchase> selectPurchaseList(PmsPurchase purchase);
     public int insertPurchase(PmsPurchase purchase);
+    public int voidPurchase(Long purchaseId, String operator);
 }
